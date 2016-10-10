@@ -16,24 +16,48 @@
  */
 package com.coinbot.ui;
 
+import java.awt.BorderLayout;
+
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import net.miginfocom.swing.MigLayout;
+
 public class UI {
 	public JFrame frame;
+	public MenuBar bar;
+	public FaucetQueuePanel faucetQueue;
+	public WorkerQueuePanel workerQueue;
+	public CaptchaPanel captchaPanel;
+	public StatsPanel statsPanel;
 	
 	public UI() {
 		setLookAndFeel();
 		frame = new JFrame();
+		bar = new MenuBar();
+		captchaPanel = new CaptchaPanel();
+		workerQueue = new WorkerQueuePanel();
+		statsPanel = new StatsPanel();
+		JPanel panel_1 = new JPanel();
+		frame.getContentPane().add(panel_1, BorderLayout.CENTER);
+		panel_1.setLayout(new MigLayout("", "[grow][grow][grow]", "[grow][grow]"));
+		panel_1.add(workerQueue, "cell 0 0 2 1,grow");
+		panel_1.add(captchaPanel, "cell 2 0 1 2,grow");
+		faucetQueue = new FaucetQueuePanel();
+		panel_1.add(faucetQueue, "cell 0 1 2 1,grow");
+		frame.getContentPane().add(statsPanel, BorderLayout.SOUTH);
 		initComponents();
 	}
 	
 	private void initComponents() {
 		frame.setSize(900, 600);
 		frame.setTitle("Coinbot - Automatic claim bot");
+		frame.setJMenuBar(bar.getBar());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
+		frame.setAlwaysOnTop(true);
 		frame.setVisible(true);
 	}
 	

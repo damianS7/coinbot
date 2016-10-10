@@ -19,10 +19,18 @@ package com.coinbot.core;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
+import com.captcha.Captcha;
+import com.coinbot.database.AddressDatabase;
+import com.coinbot.database.CaptchaDatabase;
+import com.coinbot.database.FaucetDatabase;
 import com.coinbot.database.ProxyDatabase;
+import com.coinbot.faucet.Faucet;
 import com.coinbot.ui.UI;
+import com.proxy.Proxy;
 
 
 /**
@@ -30,59 +38,68 @@ import com.coinbot.ui.UI;
  * @author danjian
  */
 public class Coinbot {
-	private static final Logger LOGGER = Logger.getLogger(Coinbot.class
-			.getName());
-	public static final String dirName = "coinbot/";
-	public static Coinbot bot;
-	public static UI ui;
-	public static CoinbotProperties coinbotProperties;
-	public static ProxyDatabase proxyDatabase;
+	private WorkerQueue workerQueue;
+	private ClaimQueue claimQueue;
+	private CaptchaQueue captchaQueue;
+	private boolean running = false;
+	private List<Proxy> proxies = new ArrayList<Proxy>();
+	private List<Faucet> faucets = new ArrayList<Faucet>();
+	private List<String> addresses = new ArrayList<String>();
+	private List<Captcha> captchas = new ArrayList<Captcha>();
 	
-	public static void main(String[] args) {
-		LOGGER.info("Comprobando permisos de escritura ...");
-		File pwd = new File(".");
-		if(!pwd.canWrite()) {
-			LOGGER.severe("No se puede escribir en " + pwd.getAbsolutePath());
+	public Coinbot() {
+		captchaQueue = new CaptchaQueue();
+		claimQueue = new ClaimQueue();
+		workerQueue = new WorkerQueue();
+		addresses = CoinbotApplication.addressDatabase.getAddresses();
+		proxies = CoinbotApplication.proxyDatabase.getProxies();
+		captchas = CoinbotApplication.captchaDatabase.getCaptchas();
+		
+		for (String f : CoinbotApplication.faucetDatabase.getFaucets()) {
+			faucets.add(new Faucet(f));
+		}
+	}
+	
+	public ClaimQueue getClaimQueue() {
+		return claimQueue;
+	}
+	
+	public List<Captcha> getCaptchas() {
+		return captchas;
+	}
+	
+	public List<String> getAddresses() {
+		return addresses;
+	}
+	
+	public List<Faucet> getFaucets() {
+		return new ArrayList<Faucet>(faucets);
+	}
+	
+	public List<Proxy> getProxies() {
+		return new ArrayList<Proxy>(proxies);
+	}
+	
+	public boolean isRunning() {
+		return running;
+	}
+	
+	public void start() {
+		if(isRunning()) {
 			return;
 		}
 		
-		LOGGER.info("Preparando ficheros necesarios para la aplicacion ...");
-		File dir = new File(dirName);
-		if(!dir.exists()) {
-			dir.mkdir();
+		running = true;
+		claimQueue.start();
+		workerQueue.start();
+	}
+	
+	public void stop() {
+		if(!isRunning()) {
+			return;
 		}
 		
-		File proxy = new File(dirName + "proxy.txt");
-		if(!proxy.exists()) {
-			try {
-				proxy.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-		
-		File properties = new File(dirName + "coinbot.properties");
-		if(!properties.exists()) {
-			try {
-				properties.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-		
-		proxyDatabase = new ProxyDatabase(proxy);
-		LOGGER.info("Proxies cargados: " + proxyDatabase.load());
-		
-		LOGGER.info("Cargando configuracion de la aplicacion");
-		coinbotProperties = new CoinbotProperties();
-		bot = new Coinbot();
-		
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				ui = new UI();
-			}
-		});
+		running = false;
+		workerQueue.stop();
 	}
 }
