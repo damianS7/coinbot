@@ -19,7 +19,7 @@ package com.coinbot.database;
 import java.io.File;
 import java.util.List;
 
-import com.coinbot.faucet.Faucet;
+import com.coinbot.core.Claim;
 
 public class FaucetDatabase extends FileDatabase {
 

@@ -25,6 +25,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import com.coinbot.core.CoinbotApplication;
+
 public class MenuBar {
 	private JMenuBar menu;
 	
@@ -91,12 +93,15 @@ public class MenuBar {
 		new Preferences();
 	}
 	protected void start() {
+		CoinbotApplication.bot.start();
 	}
 	
 	protected void stop() {
+		CoinbotApplication.bot.stop();
 	}
 	
 	protected void showAbout() {
+		new About();
 	}
 	
 	protected void exit() {

@@ -28,25 +28,25 @@ import net.miginfocom.swing.MigLayout;
 public class UI {
 	public JFrame frame;
 	public MenuBar bar;
-	public FaucetQueuePanel faucetQueue;
+	public ClaimQueuePanel claimQueue;
 	public WorkerQueuePanel workerQueue;
-	public CaptchaPanel captchaPanel;
+	public CaptchaQueuePanel captchaQueue;
 	public StatsPanel statsPanel;
 	
 	public UI() {
 		setLookAndFeel();
 		frame = new JFrame();
 		bar = new MenuBar();
-		captchaPanel = new CaptchaPanel();
+		captchaQueue = new CaptchaQueuePanel();
 		workerQueue = new WorkerQueuePanel();
 		statsPanel = new StatsPanel();
 		JPanel panel_1 = new JPanel();
 		frame.getContentPane().add(panel_1, BorderLayout.CENTER);
 		panel_1.setLayout(new MigLayout("", "[grow][grow][grow]", "[grow][grow]"));
 		panel_1.add(workerQueue, "cell 0 0 2 1,grow");
-		panel_1.add(captchaPanel, "cell 2 0 1 2,grow");
-		faucetQueue = new FaucetQueuePanel();
-		panel_1.add(faucetQueue, "cell 0 1 2 1,grow");
+		panel_1.add(captchaQueue, "cell 2 0 1 2,grow");
+		claimQueue = new ClaimQueuePanel();
+		panel_1.add(claimQueue, "cell 0 1 2 1,grow");
 		frame.getContentPane().add(statsPanel, BorderLayout.SOUTH);
 		initComponents();
 	}

@@ -24,7 +24,7 @@ import java.util.List;
  * @author danjian
  */
 public class WorkerQueue implements Runnable {
-	private List<WorkerThread> queue = new ArrayList<WorkerThread>();
+	private List<Worker> queue = new ArrayList<Worker>();
 	private Thread queueThread;
 	private int maxWorkers = 4;
 	
@@ -32,16 +32,16 @@ public class WorkerQueue implements Runnable {
 		queueThread = new Thread(this);
 	}
 	
-	public synchronized void addWorker(WorkerThread worker) {
+	public synchronized void addWorker(Worker worker) {
 		queue.add(worker);
 	}
 	
-	public synchronized void removeWorker(WorkerThread worker) {
+	public synchronized void removeWorker(Worker worker) {
 		queue.remove(worker);
 	}
 	
-	public List<WorkerThread> getWorkers() {
-		return new ArrayList<WorkerThread>(queue);
+	public List<Worker> getWorkers() {
+		return new ArrayList<Worker>(queue);
 	}
 	
 	public int countWorkers() {
@@ -58,7 +58,7 @@ public class WorkerQueue implements Runnable {
 	}
 	
 	public void stopWorkers() {
-		for (WorkerThread worker : getWorkers()) {
+		for (Worker worker : getWorkers()) {
 			worker.stop();
 		}
 		clearQueue();
@@ -76,7 +76,7 @@ public class WorkerQueue implements Runnable {
 	}
 	
 	public void checkQueue() {
-		for (WorkerThread worker : getWorkers()) {
+		for (Worker worker : getWorkers()) {
 			if(worker.hasFinished()) {
 				removeWorker(worker);
 			}
@@ -91,8 +91,8 @@ public class WorkerQueue implements Runnable {
 			
 			// La cola no esta llena, nuevo worker ...
 			if(!isQueueFull()) {
-				System.out.println("Adding worker id: " + countWorkers());
-				WorkerThread worker = new WorkerThread(countWorkers());
+				//System.out.println("Adding worker id: " + countWorkers());
+				Worker worker = new Worker(countWorkers());
 				worker.start();
 				addWorker(worker);
 			}

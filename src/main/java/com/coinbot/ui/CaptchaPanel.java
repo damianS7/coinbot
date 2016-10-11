@@ -16,12 +16,40 @@
  */
 package com.coinbot.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JDialog;
+
+import net.miginfocom.swing.MigLayout;
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+
+import com.coinbot.core.CoinbotApplication;
 
 public class CaptchaPanel extends JPanel {
-	public CaptchaPanel() {
-		setBorder(new TitledBorder(null, "Captcha queue", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	private JTextField input;
+	
+	public CaptchaPanel(BufferedImage image) {
+		setLayout(new MigLayout("", "[grow]", "[grow][]"));
 		
+		JLabel label = new JLabel();
+		label.setIcon(new ImageIcon(image));
+		add(label, "cell 0 0");
+		
+		input = new JTextField();
+		input.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//CoinbotApplication.
+			}
+		});
+		add(input, "cell 0 1,growx");
+		input.setColumns(10);
 	}
+
 }

@@ -18,32 +18,33 @@ package com.coinbot.ui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
-public class WorkerPanel extends JPanel {
-	private static final long serialVersionUID = 5648986356219872274L;
-	private ClaimPanel fp;
-	
-	public WorkerPanel(String id) {
-		TitledBorder border = new TitledBorder(null, "Worker #" + id, 
-				TitledBorder.LEADING, TitledBorder.TOP, null, null);
-		setBorder(border);
+public class ClaimQueuePanel extends JPanel {
+	private JPanel queuePanel;
+
+	public ClaimQueuePanel() {
+		setBorder(new TitledBorder(null, "Faucet queue", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setLayout(new BorderLayout(0, 0));
-	}
-	
-	public void addClaim(ClaimPanel fcp) {
-		if(fp != null) {
-			removeClaim(fp);
-		}
 		
-		fp = fcp;
-		add(fp, BorderLayout.CENTER);
-		revalidate();
+		JScrollPane scrollPane = new JScrollPane();
+		add(scrollPane, BorderLayout.CENTER);
+		
+		queuePanel = new JPanel();
+		scrollPane.setViewportView(queuePanel);
+		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
 	}
 	
-	public void removeClaim(ClaimPanel cp) {
-		remove(cp);
-		revalidate();
+	public void addClaim(ClaimPanel panel) {
+		queuePanel.add(panel);
+		queuePanel.revalidate();
+	}
+	
+	public void removeClaim(ClaimPanel panel) {
+		queuePanel.remove(panel);
+		queuePanel.revalidate();
 	}
 }

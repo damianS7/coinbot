@@ -16,11 +16,16 @@
  */
 package com.coinbot.core;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-import com.coinbot.faucet.FaucetClaim;
-import com.coinbot.faucet.Faucet;
-import com.coinbot.ui.FaucetClaimPanel;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+
+import com.coinbot.ui.CaptchaPanel;
+import com.coinbot.ui.ClaimPanel;
 import com.coinbot.ui.WorkerPanel;
 import com.proxy.Proxy;
 
@@ -28,14 +33,14 @@ import com.proxy.Proxy;
  * Esta clase hace todo el trabajo de claim
  * @author danjian
  */
-public class WorkerThread implements Runnable {
+public class Worker implements Runnable {
 	private int workerId = 0;
 	private WorkerPanel workerPanel;
 	private Thread thread;
 	private Proxy proxy;
-	private List<Faucet> faucets;
+	private List<Claim> faucets;
 	
-	public WorkerThread(int workerId) {
+	public Worker(int workerId) {
 		this.workerId = workerId;
 		this.workerPanel = new WorkerPanel(Integer.toString(workerId));
 		thread = new Thread(this);
@@ -68,17 +73,28 @@ public class WorkerThread implements Runnable {
 				Thread.currentThread().interrupt();
 			}
 			
-			FaucetClaim claim = CoinbotApplication.bot.getClaimQueue().next();
+			Claim claim = CoinbotApplication.bot.getClaimQueue().next();
 			if(claim == null) {
 				continue;
 			}
 			
-			CoinbotApplication.ui.faucetQueue.removeFaucetClaim(claim.getPanel());
-			workerPanel.addFaucetClaim(claim.getPanel());
+			CoinbotApplication.ui.claimQueue.removeClaim(claim.getPanel());
+			
+			workerPanel.addClaim(claim.getPanel());
 			
 			claim.getPanel().getProgressBar().setStringPainted(true);
-			claim.getPanel().getProgressBar().setMaximum(25);
-			for (int i = 0; i < 25; i++) {
+			claim.getPanel().getProgressBar().setMaximum(3);
+			
+			BufferedImage bi;
+			try {
+				bi = ImageIO.read(new File("coinbot/captchas/smc1.png"));
+				CoinbotApplication.ui.captchaQueue.addCaptcha(new CaptchaPanel(bi));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			
+			for (int i = 0; i < 3; i++) {
 				claim.getPanel().getProgressBar().setString("Doing things " + i);
 				claim.getPanel().getProgressBar().setValue(i);
 				try {
@@ -93,12 +109,14 @@ public class WorkerThread implements Runnable {
 			try {
 				Thread.sleep(3000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			claim.done(2000, 1);
+			workerPanel.removeClaim(claim.getPanel());
+			
+			claim.getTimer().done(2000, 1);
 			CoinbotApplication.bot.getClaimQueue().toQueue(claim);
+			
 		}
 		System.out.println("Worker " + workerId + " end work!");
 		

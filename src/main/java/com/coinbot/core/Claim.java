@@ -16,20 +16,31 @@
  */
 package com.coinbot.core;
 
+import com.coinbot.faucet.ClaimTimer;
+import com.coinbot.faucet.Faucet;
+import com.coinbot.ui.ClaimPanel;
 import com.proxy.Proxy;
 
-public class Claim implements Runnable {
-	private Proxy proxy;
+public class Claim {
 	private Faucet faucet;
+	private Proxy proxy;
 	private String btcAddress;
-	private boolean ready = true;
-	private Thread thread;
+	private ClaimPanel panel;
+	private ClaimTimer timer;
 	
 	public Claim(Proxy proxy, Faucet faucet, String btcAddress) {
 		this.proxy = proxy;
 		this.faucet = faucet;
 		this.btcAddress = btcAddress;
-		this.thread = new Thread(this);
+		this.panel = new ClaimPanel(proxy.getAddress(), 
+				Integer.toString(proxy.getPort()), 
+				faucet.getName());
+		panel.ready();
+		this.timer = new ClaimTimer(this);
+	}
+	
+	public ClaimPanel getPanel() {
+		return panel;
 	}
 	
 	public String getBtcAddress() {
@@ -44,24 +55,7 @@ public class Claim implements Runnable {
 		return proxy;
 	}
 	
-	public void done() {
-		ready = false;
-		thread.start();
-	}
-	
-	public boolean isReady() {
-		return ready;
-	}
-
-	@Override
-	public void run() {
-		for (int i = 0; i < faucet.getTimer()*60; i++) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		ready = true;
+	public ClaimTimer getTimer() {
+		return timer;
 	}
 }

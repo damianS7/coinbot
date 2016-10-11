@@ -18,40 +18,38 @@ package com.coinbot.ui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+import javax.swing.Timer;
 
-import com.coinbot.core.WorkerThread;
+import com.coinbot.core.Worker;
 
 import net.miginfocom.swing.MigLayout;
 
-public class FaucetClaimPanel extends JPanel {
-	private JLabel proxyIp;
-	private JLabel proxyPort;
+public class ClaimPanel extends JPanel {
+	private JLabel proxy;
 	private JProgressBar progressBar;
+	private JLabel lblName;
 
-	public FaucetClaimPanel(String ip, String port, String faucet) {
+	public ClaimPanel(String ip, String port, String faucet) {
         setMaximumSize(new Dimension((int) getMaximumSize().getWidth(), 35));
-		setLayout(new MigLayout("", "[78px,grow][5px][78px,grow][148px,grow]", "[20px]"));
-        
-		proxyIp = new JLabel(ip);
-		add(proxyIp, "cell 0 0,alignx left,aligny center");
+		setLayout(new MigLayout("", "[78px,grow][78px,grow][150px:150px]", "[20px]"));
 		
-		JLabel label_2 = new JLabel(":");
-		add(label_2, "cell 1 0,alignx left,aligny center");
+		lblName = new JLabel(faucet);
+		add(lblName, "cell 0 0,growx");
 		
-		proxyPort = new JLabel(port);
-		add(proxyPort, "cell 2 0,alignx left,aligny center");
+		proxy = new JLabel(ip + ":" + port);
+		add(proxy, "cell 1 0,growx,aligny center");
 		
 		progressBar = new JProgressBar();
-		progressBar.setMaximum(4);
-		progressBar.setStringPainted(true);
-		progressBar.setString(faucet);
-		add(progressBar, "cell 3 0,growx,aligny top");
+		add(progressBar, "cell 2 0,growx,aligny top");
 	}
-	
+
 	public void ready() {
 		progressBar.setStringPainted(true);
 		progressBar.setString("Ready!");
@@ -67,4 +65,5 @@ public class FaucetClaimPanel extends JPanel {
 	public JProgressBar getProgressBar() {
 		return progressBar;
 	}
+	
 }

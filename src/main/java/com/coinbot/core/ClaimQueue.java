@@ -19,25 +19,24 @@ package com.coinbot.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.coinbot.faucet.FaucetClaim;
 import com.coinbot.faucet.Faucet;
-import com.coinbot.ui.FaucetClaimPanel;
+import com.coinbot.ui.ClaimPanel;
 import com.proxy.Proxy;
 
 public class ClaimQueue {
-	private List<FaucetClaim> queue = new ArrayList<FaucetClaim>();
+	private List<Claim> queue = new ArrayList<Claim>();
 	
-	public void toQueue(FaucetClaim claim) {
+	public void toQueue(Claim claim) {
 		queue.add(claim);
-		CoinbotApplication.ui.faucetQueue.addFaucetClaim(claim.getPanel());
+		CoinbotApplication.ui.claimQueue.addClaim(claim.getPanel());
 	}
 	
-	public FaucetClaim next() {
-		List<FaucetClaim> cs = getClaims();
+	public Claim next() {
+		List<Claim> cs = getClaims();
 		
 		if(!cs.isEmpty()) {
-			FaucetClaim claim = cs.get(0);
-			if(claim.isReady()) {
+			Claim claim = cs.get(0);
+			if(claim.getTimer().isReady()) {
 				queue.remove(claim);
 				return claim;
 			}
@@ -58,7 +57,7 @@ public class ClaimQueue {
 				
 				try {
 					String a = address.get(index);
-					FaucetClaim c = new FaucetClaim(p, f, a);
+					Claim c = new Claim(p, f, a);
 					toQueue(c);
 				} catch (IndexOutOfBoundsException e) {
 					break;
@@ -69,20 +68,11 @@ public class ClaimQueue {
 		
 	}
 	
-	public List<FaucetClaim> getClaims() {
-		return new ArrayList<FaucetClaim>(queue);
+	public List<Claim> getClaims() {
+		return new ArrayList<Claim>(queue);
 	}
 	
 	public int size() {
 		return queue.size();
-	}
-	
-	public FaucetClaim getClaim() {
-		for (FaucetClaim claim : getClaims()) {
-			if(claim.isReady()) {
-				return claim;
-			}
-		}
-		return null;
 	}
 }

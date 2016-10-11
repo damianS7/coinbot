@@ -23,11 +23,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
-public class FaucetQueuePanel extends JPanel {
+public class CaptchaQueuePanel extends JPanel {
 	private JPanel queuePanel;
-
-	public FaucetQueuePanel() {
-		setBorder(new TitledBorder(null, "Faucet queue", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+	
+	public CaptchaQueuePanel() {
+		setBorder(new TitledBorder(null, "Captcha queue", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		setLayout(new BorderLayout(0, 0));
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -36,15 +36,14 @@ public class FaucetQueuePanel extends JPanel {
 		queuePanel = new JPanel();
 		scrollPane.setViewportView(queuePanel);
 		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
-		//queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.PAGE_AXIS));
 	}
 	
-	public void addFaucetClaim(FaucetClaimPanel panel) {
+	public void addCaptcha(CaptchaPanel panel) {
 		queuePanel.add(panel);
 		queuePanel.revalidate();
 	}
 	
-	public void removeFaucetClaim(FaucetClaimPanel panel) {
+	public void removeCaptcha(CaptchaPanel panel) {
 		queuePanel.remove(panel);
 		queuePanel.revalidate();
 	}
