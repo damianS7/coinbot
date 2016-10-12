@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.proxy.Proxy;
+import com.coinbot.proxy.Proxy;
 
 public class ProxyDatabase {
 	private File file;

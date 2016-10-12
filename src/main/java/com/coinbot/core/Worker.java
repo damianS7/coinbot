@@ -19,15 +19,24 @@ package com.coinbot.core;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+
+import com.coinbot.faucet.Claim;
+import com.coinbot.proxy.Proxy;
 import com.coinbot.ui.CaptchaPanel;
 import com.coinbot.ui.ClaimPanel;
 import com.coinbot.ui.WorkerPanel;
-import com.proxy.Proxy;
 
 /**
  * Esta clase hace todo el trabajo de claim
@@ -64,63 +73,61 @@ public class Worker implements Runnable {
 	
 	@Override
 	public void run() {
+		File pathToBinary = new File("/home/jian/Descargas/firefox46/bin/firefox");
+		// Firefox 46 needed
+		FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
+		FirefoxProfile profile = new FirefoxProfile();
+		FirefoxDriver driver = new FirefoxDriver(ffBinary, profile);
 		CoinbotApplication.ui.workerQueue.addWorker(workerPanel);
 		
-		while(!thread.isInterrupted()) {
-			try {
-				Thread.sleep(2500);
-			} catch (InterruptedException e) {
-				Thread.currentThread().interrupt();
-			}
-			
+		while(CoinbotApplication.bot.isRunning()) {
 			Claim claim = CoinbotApplication.bot.getClaimQueue().next();
 			if(claim == null) {
 				continue;
 			}
 			
-			CoinbotApplication.ui.claimQueue.removeClaim(claim.getPanel());
-			
+			claim.getPanel().reset();
+			claim.getPanel().getProgressBar().setMaximum(5);
 			workerPanel.addClaim(claim.getPanel());
-			
-			claim.getPanel().getProgressBar().setStringPainted(true);
-			claim.getPanel().getProgressBar().setMaximum(3);
-			
-			BufferedImage bi;
-			try {
-				bi = ImageIO.read(new File("coinbot/captchas/smc1.png"));
-				CoinbotApplication.ui.captchaQueue.addCaptcha(new CaptchaPanel(bi));
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			
-			
-			for (int i = 0; i < 3; i++) {
-				claim.getPanel().getProgressBar().setString("Doing things " + i);
-				claim.getPanel().getProgressBar().setValue(i);
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			claim.getPanel().done();
+			claim.getPanel().nextStep("Opening URL");
 			
 			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
+				driver.manage().timeouts().pageLoadTimeout(12, TimeUnit.SECONDS);
+				driver.navigate().to(new URL(claim.getFaucet().getUrl()));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+				continue;
+			} catch (TimeoutException e) {
+				// Busca un elemento, si no lo encuentra que vuelva a cargar
 				e.printStackTrace();
 			}
 			
-			workerPanel.removeClaim(claim.getPanel());
+			claim.getPanel().nextStep("Opening URL");
 			
+			// Detectar captcha (throws captcha  no soportado)
+			// Resolver captcha 
+			// Detectar antibot (puzzle no soportado)
+			// Resolver antibot
+			// Detectar input address (input no encontrada)
+			// poner address
+			// submit
+			// leer errores / notificaciones
+			
+			
+			claim.getPanel().done();
+			workerPanel.removeClaim(claim.getPanel());
 			claim.getTimer().done(2000, 1);
 			CoinbotApplication.bot.getClaimQueue().toQueue(claim);
 			
 		}
-		System.out.println("Worker " + workerId + " end work!");
 		
+		try {
+			driver.close();
+		} catch (Exception e) {
+			
+		}
 		CoinbotApplication.ui.workerQueue.removeWorker(workerPanel);
+		System.out.println("Worker " + workerId + " end work!");
 	}
 
 }

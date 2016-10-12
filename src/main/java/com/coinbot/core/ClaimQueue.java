@@ -19,10 +19,14 @@ package com.coinbot.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.coinbot.faucet.Claim;
 import com.coinbot.faucet.Faucet;
-import com.coinbot.ui.ClaimPanel;
-import com.proxy.Proxy;
-
+import com.coinbot.proxy.Proxy;
+/**
+ * Esta clase se usa para asociar cada proxy con una faucet y direccion btc
+ * de forma que los claims sean unicos y no se repitan
+ * @author danjian
+ */
 public class ClaimQueue {
 	private List<Claim> queue = new ArrayList<Claim>();
 	
@@ -38,6 +42,7 @@ public class ClaimQueue {
 			Claim claim = cs.get(0);
 			if(claim.getTimer().isReady()) {
 				queue.remove(claim);
+				CoinbotApplication.ui.claimQueue.removeClaim(claim.getPanel());
 				return claim;
 			}
 		}

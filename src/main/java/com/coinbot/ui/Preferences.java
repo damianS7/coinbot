@@ -18,6 +18,8 @@ package com.coinbot.ui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -31,52 +33,76 @@ import net.miginfocom.swing.MigLayout;
 
 import com.coinbot.core.CoinbotApplication;
 
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+
 
 public class Preferences extends JDialog {
 	
+	private JCheckBox autoCaptcha;
+	private JSpinner workers;
+
 	public Preferences() {
 		super(CoinbotApplication.ui.frame, "Preferences");
 		setModal(true);
+		getContentPane().setLayout(new MigLayout("", "[grow]", "[85px][35px]"));
 		
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
-		getContentPane().add(panel, BorderLayout.SOUTH);
+		getContentPane().add(panel, "cell 0 1,alignx right,aligny top");
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 		panel.add(btnCancel);
 		
 		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				save();
+			}
+		});
+		btnSave.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(btnSave);
 		
 		JPanel panel_1 = new JPanel();
-		getContentPane().add(panel_1, BorderLayout.CENTER);
-		panel_1.setLayout(new MigLayout("", "[grow][grow]", "[][][]"));
+		getContentPane().add(panel_1, "cell 0 0,growx,aligny top");
+		panel_1.setLayout(new MigLayout("", "[150px:n,grow][150,grow,left]", "[][][]"));
 		
-		JLabel lblThreads = new JLabel("Threads");
-		panel_1.add(lblThreads, "cell 0 2");
+		JLabel lblThreads = new JLabel("Workers");
+		panel_1.add(lblThreads, "cell 0 2,growx");
 		
-		JSpinner spinner = new JSpinner();
-		panel_1.add(spinner, "cell 1 2,growx");
+		workers = new JSpinner();
+		workers.getModel().setValue(CoinbotApplication.coinbotProperties.getWorkers());
+		panel_1.add(workers, "flowy,cell 1 2,alignx right");
 		
-		JLabel lblManualCaptcha = new JLabel("Manual captcha");
-		panel_1.add(lblManualCaptcha, "cell 0 0");
+		JLabel lblAutoCaptcha = new JLabel("Auto-captcha");
+		panel_1.add(lblAutoCaptcha, "cell 0 0,growx");
 		
-		JCheckBox checkBox = new JCheckBox("");
-		panel_1.add(checkBox, "cell 1 0,alignx right");
+		autoCaptcha = new JCheckBox("");
+		autoCaptcha.setSelected(CoinbotApplication.coinbotProperties.getAutoCaptcha());
+		panel_1.add(autoCaptcha, "cell 1 0,alignx right");
 		
 		JLabel lblCaptchaTimeout = new JLabel("Captcha timeout");
-		panel_1.add(lblCaptchaTimeout, "cell 0 1");
+		panel_1.add(lblCaptchaTimeout, "cell 0 1,growx");
 		
 		JSpinner spinner_1 = new JSpinner();
-		panel_1.add(spinner_1, "cell 1 1,growx");
+		panel_1.add(spinner_1, "cell 1 1,alignx right");
+		
 		pack();
 		setLocationRelativeTo(CoinbotApplication.ui.frame);
 		setVisible(true);
 	}
 	
 	public void save() {
-		//JassapServer.serverProperties.setAddress(address.getText());
+		CoinbotApplication.coinbotProperties.setAutoCaptcha(autoCaptcha.isSelected());
+		CoinbotApplication.coinbotProperties.setWorkers(workers.getValue().toString());
 		
 		try {
 			CoinbotApplication.coinbotProperties.save();

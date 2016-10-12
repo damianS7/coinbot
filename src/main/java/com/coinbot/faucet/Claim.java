@@ -14,19 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.core;
+package com.coinbot.faucet;
 
-import com.coinbot.faucet.ClaimTimer;
-import com.coinbot.faucet.Faucet;
+import com.coinbot.proxy.Proxy;
 import com.coinbot.ui.ClaimPanel;
-import com.proxy.Proxy;
-
+/**
+ * Esta clase se usa para representar un "claim" en la faucet. El claim es el
+ * acto de rellenar el captcha y poner tu direccion de btc en la faucet y 
+ * presionar el boton de reward.
+ * @author danjian
+ */
 public class Claim {
-	private Faucet faucet;
-	private Proxy proxy;
-	private String btcAddress;
 	private ClaimPanel panel;
 	private ClaimTimer timer;
+	private String btcAddress;
+	private Faucet faucet;
+	private Proxy proxy;
 	
 	public Claim(Proxy proxy, Faucet faucet, String btcAddress) {
 		this.proxy = proxy;

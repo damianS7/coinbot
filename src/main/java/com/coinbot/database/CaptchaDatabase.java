@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.captcha.Captcha;
+import com.coinbot.captcha.Captcha;
 
 public class CaptchaDatabase extends FileDatabase {
 	private List<Captcha> captchas = new ArrayList<Captcha>();

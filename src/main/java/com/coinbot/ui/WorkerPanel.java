@@ -23,7 +23,7 @@ import javax.swing.border.TitledBorder;
 
 public class WorkerPanel extends JPanel {
 	private static final long serialVersionUID = 5648986356219872274L;
-	private ClaimPanel fp;
+	private ClaimPanel last;
 	
 	public WorkerPanel(String id) {
 		TitledBorder border = new TitledBorder(null, "Worker #" + id, 
@@ -32,12 +32,12 @@ public class WorkerPanel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 	}
 	
-	public void addClaim(ClaimPanel fcp) {
-		if(fp != null) {
-			removeClaim(fp);
+	public void addClaim(ClaimPanel fp) {
+		if(last != null) {
+			removeClaim(last);
 		}
 		
-		fp = fcp;
+		last = fp;
 		add(fp, BorderLayout.CENTER);
 		revalidate();
 	}

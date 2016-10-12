@@ -14,24 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.database;
+package com.coinbot.proxy;
 
-import java.io.File;
-import java.util.List;
-
-import com.coinbot.faucet.Claim;
-
-public class FaucetDatabase extends FileDatabase {
-
-	public FaucetDatabase(File file) {
-		super(file);
+public class Proxy {
+	private String address;
+	private int port;
+	
+	public Proxy(String address, int port) {
+		this.address = address;
+		this.port = port;
 	}
 	
-	public List<String> getFaucets() {
-		return getLines();
+	public Proxy(String address, String port) {
+		this(address, Integer.parseInt(port));
 	}
 	
-	public void setFaucets(List<String> faucets) {
-		setLines(faucets);
+	public String toString() {
+		return address + ":" + port;
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+	
+	public int getPort() {
+		return port;
+	}
+	
+	public void setPort(int port) {
+		this.port = port;
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
 	}
 }

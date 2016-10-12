@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Esta clase se usa para gestionar la cola de "workers"
+ * Esta clase se usa para gestionar la cola de "workers" (thread), en caso de 
+ * que un worker muera por una excepcion, la cola automaticamente crea otro. 
  * @author danjian
  */
 public class WorkerQueue implements Runnable {
@@ -28,8 +29,16 @@ public class WorkerQueue implements Runnable {
 	private Thread queueThread;
 	private int maxWorkers = 4;
 	
+	public WorkerQueue(int maxWorkers) {
+		this.maxWorkers = maxWorkers;
+	}
+	
 	public WorkerQueue() {
-		queueThread = new Thread(this);
+		this(4);
+	}
+	
+	public void setMaxWorkers(int maxWorkers) {
+		this.maxWorkers = maxWorkers;
 	}
 	
 	public synchronized void addWorker(Worker worker) {
@@ -65,6 +74,7 @@ public class WorkerQueue implements Runnable {
 	}
 	
 	public void start() {
+		queueThread = new Thread(this);
 		queueThread.start();
 	}
 	
@@ -85,9 +95,8 @@ public class WorkerQueue implements Runnable {
 	
 	@Override
 	public void run() {
-		
-		while(!queueThread.isInterrupted()) {
-			//checkQueue();
+		while(CoinbotApplication.bot.isRunning()) {
+			checkQueue();
 			
 			// La cola no esta llena, nuevo worker ...
 			if(!isQueueFull()) {
@@ -96,12 +105,7 @@ public class WorkerQueue implements Runnable {
 				worker.start();
 				addWorker(worker);
 			}
-			
-			
 		}
-		
-		System.out.println("Queue thread stopped");
+		System.out.println("Stopped");
 	}
-	
-	
 }

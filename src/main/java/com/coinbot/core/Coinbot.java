@@ -16,21 +16,12 @@
  */
 package com.coinbot.core;
 
-import java.awt.EventQueue;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import com.captcha.Captcha;
-import com.coinbot.database.AddressDatabase;
-import com.coinbot.database.CaptchaDatabase;
-import com.coinbot.database.FaucetDatabase;
-import com.coinbot.database.ProxyDatabase;
+import com.coinbot.captcha.Captcha;
 import com.coinbot.faucet.Faucet;
-import com.coinbot.ui.UI;
-import com.proxy.Proxy;
+import com.coinbot.proxy.Proxy;
 
 
 /**
@@ -51,6 +42,7 @@ public class Coinbot {
 		captchaQueue = new CaptchaQueue();
 		claimQueue = new ClaimQueue();
 		workerQueue = new WorkerQueue();
+		workerQueue.setMaxWorkers(CoinbotApplication.coinbotProperties.getWorkers());
 		addresses = CoinbotApplication.addressDatabase.getAddresses();
 		proxies = CoinbotApplication.proxyDatabase.getProxies();
 		captchas = CoinbotApplication.captchaDatabase.getCaptchas();

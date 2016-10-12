@@ -24,14 +24,14 @@ import java.util.Properties;
 
 /**
  * Clase para leer y almacenar datos de configuracion del bot
- * 
  * @author danjian
  */
 public class CoinbotProperties extends Properties {
+	private static final long serialVersionUID = 8607944448799338338L;
 	private boolean modyfied = false;
 	private File file;
-	private String[][] fields = { { "timeout", "15" }, { "max_threads", "4" },
-			{ "max_connections", "200" }, { "manual_captcha", "true" },
+	private String[][] fields = { { "timeout", "15" }, { "workers", "1" },
+			{ "auto_captcha", "false" },
 			{ "captcha_timeout", "30" } };
 
 	public CoinbotProperties(File file) throws IOException {
@@ -59,15 +59,19 @@ public class CoinbotProperties extends Properties {
 		store(new FileOutputStream(file), "Coinbot properties");
 	}
 
-	public void setMaxThreads(String threads) {
-		setProperty("max_threads", threads);
+	public void setWorkers(String threads) {
+		setProperty("workers", threads);
 	}
 
-	public String getMaxThreads() {
-		return getProperty("max_threads");
+	public int getWorkers() {
+		return Integer.parseInt(getProperty("workers"));
 	}
 	
-	public void setManualCaptcha(String captcha) {
-		setProperty("manual_captcha", captcha);
+	public void setAutoCaptcha(boolean bool) {
+		setProperty("auto_captcha", Boolean.toString(bool));
+	}
+	
+	public boolean getAutoCaptcha() {
+		return Boolean.parseBoolean(getProperty("auto_captcha"));
 	}
 }

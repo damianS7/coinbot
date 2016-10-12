@@ -19,8 +19,6 @@ package com.coinbot.core;
 import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.coinbot.database.AddressDatabase;
@@ -28,7 +26,6 @@ import com.coinbot.database.CaptchaDatabase;
 import com.coinbot.database.FaucetDatabase;
 import com.coinbot.database.ProxyDatabase;
 import com.coinbot.ui.UI;
-import com.proxy.Proxy;
 
 public class CoinbotApplication {
 	private static final Logger LOGGER = Logger.getLogger(CoinbotApplication.class

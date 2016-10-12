@@ -19,7 +19,7 @@ package com.coinbot.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.captcha.Captcha;
+import com.coinbot.captcha.Captcha;
 
 public class CaptchaQueue {
 	private List<Captcha> queue = new ArrayList<Captcha>();

@@ -48,18 +48,27 @@ public class ClaimPanel extends JPanel {
 		
 		progressBar = new JProgressBar();
 		add(progressBar, "cell 2 0,growx,aligny top");
+		progressBar.setStringPainted(true);
+	}
+	
+	public void nextStep(String step) {
+		progressBar.setValue(progressBar.getValue()+1);
+		progressBar.setString(step);
 	}
 
 	public void ready() {
-		progressBar.setStringPainted(true);
-		progressBar.setString("Ready!");
 		progressBar.setValue(progressBar.getMaximum());
+		progressBar.setString("Ready!");
 	}
 	
 	public void done() {
-		progressBar.setStringPainted(true);
-		progressBar.setString("Done!");
 		progressBar.setValue(progressBar.getMaximum());
+		progressBar.setString("Done!");
+	}
+	
+	public void reset() {
+		progressBar.setValue(0);
+		progressBar.setString("");
 	}
 	
 	public JProgressBar getProgressBar() {

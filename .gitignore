@@ -1,1 +1,6 @@
 /bin/
+/coinbot/
+/build/
+/.gradle/
+/.classpath
+/.project

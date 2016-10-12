@@ -26,6 +26,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * Esta clase representa a la faucet y contiene las propiedades de esta
+ * @author danjian
+ */
 public class Faucet {
 	private String url;
 	private String html = "";

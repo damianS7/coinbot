@@ -16,8 +16,10 @@
  */
 package com.coinbot.faucet;
 
-import com.coinbot.core.Claim;
-
+/**
+ * Temporizador para controlar los tiempos entre claims
+ * @author danjian
+ */
 public class ClaimTimer implements Runnable {
 	private Claim claim;
 	private Thread thread;
@@ -33,6 +35,9 @@ public class ClaimTimer implements Runnable {
 	}
 	
 	public void done(int reward, int timer) {
+		this.hours = timer/60;
+		this.minutes = timer;
+		this.seconds = 0;
 		claim.getFaucet().setTimer(timer);
 		claim.getFaucet().setReward(reward);
 		ready = false;
