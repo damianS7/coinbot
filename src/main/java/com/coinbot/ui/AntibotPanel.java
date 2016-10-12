@@ -14,36 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.core;
+package com.coinbot.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.image.BufferedImage;
 
-import com.coinbot.captcha.Captcha;
+public class AntibotPanel /*extends CaptchaPanel*/ {
 
-public class CaptchaQueue implements Runnable {
-	private List<Captcha> queue = new ArrayList<Captcha>();
-	
-	public void toQueue(Captcha captcha) {
-		queue.add(captcha);
-		CoinbotApplication.ui.captchaQueue.addCaptcha(captcha);
-	}
-	
-	public void deQueue(Captcha captcha) {
-		queue.remove(captcha);
-		CoinbotApplication.ui.captchaQueue.removeCaptcha(captcha);
-	}
-	
-	public List<Captcha> getQueue() {
-		return new ArrayList<Captcha>(queue);
-	}
 
-	@Override
-	public void run() {
-		for (Captcha captcha : getQueue()) {
-			if(captcha.hasExpired()) {
-				deQueue(captcha);
-			}
-		}
-	}
 }

@@ -52,6 +52,10 @@ public class Coinbot {
 		}
 	}
 	
+	public CaptchaQueue getCaptchaQueue() {
+		return captchaQueue;
+	}
+	
 	public ClaimQueue getClaimQueue() {
 		return claimQueue;
 	}

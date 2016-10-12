@@ -42,7 +42,7 @@ public class UI {
 		statsPanel = new StatsPanel();
 		JPanel panel_1 = new JPanel();
 		frame.getContentPane().add(panel_1, BorderLayout.CENTER);
-		panel_1.setLayout(new MigLayout("", "[grow][grow][grow]", "[grow][grow]"));
+		panel_1.setLayout(new MigLayout("", "[grow][grow][350px:n:350px]", "[grow][grow]"));
 		panel_1.add(workerQueue, "cell 0 0 2 1,grow");
 		panel_1.add(captchaQueue, "cell 2 0 1 2,grow");
 		claimQueue = new ClaimQueuePanel();

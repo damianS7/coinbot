@@ -16,26 +16,26 @@
  */
 package com.coinbot.core;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
+import com.coinbot.captcha.Captcha;
+import com.coinbot.captcha.CaptchaDetector;
+import com.coinbot.captcha.CaptchaTimer;
+import com.coinbot.exceptions.UnrecognizedCaptcha;
 import com.coinbot.faucet.Claim;
 import com.coinbot.proxy.Proxy;
-import com.coinbot.ui.CaptchaPanel;
-import com.coinbot.ui.ClaimPanel;
 import com.coinbot.ui.WorkerPanel;
 
 /**
@@ -87,7 +87,7 @@ public class Worker implements Runnable {
 			}
 			
 			claim.getPanel().reset();
-			claim.getPanel().getProgressBar().setMaximum(5);
+			claim.getPanel().getProgressBar().setMaximum(10);
 			workerPanel.addClaim(claim.getPanel());
 			claim.getPanel().nextStep("Opening URL");
 			
@@ -102,14 +102,73 @@ public class Worker implements Runnable {
 				e.printStackTrace();
 			}
 			
-			claim.getPanel().nextStep("Opening URL");
+			// Detectando captcha
+			claim.getPanel().nextStep("Detecting Captcha");
+			CaptchaDetector captchaDetector = new CaptchaDetector();
+			Captcha captcha = null;
 			
-			// Detectar captcha (throws captcha  no soportado)
-			// Resolver captcha 
+			try {
+				captcha = captchaDetector.find(driver, 
+						driver.findElement(By.tagName("body")));
+			} catch(NoSuchElementException ex) {
+				ex.printStackTrace();
+				claim.getPanel().nextStep("Body not found!");
+				continue;
+			} catch(UnrecognizedCaptcha ex) {
+				ex.printStackTrace();
+				claim.getPanel().nextStep("Captcha not recognized.");
+				continue;
+			} catch(Exception ex) {
+				continue;
+			}
+			
+			claim.getPanel().nextStep("Waiting for captcha answer ...");
+			
+			// Encolar captcha
+			CoinbotApplication.bot.getCaptchaQueue().toQueue(captcha);
+			
+			// Esperar la resolucion del captcha
+			CaptchaTimer ct = new CaptchaTimer(captcha);
+			ct.start();
+			
+			// Esperamos a la resolucion
+			while(!ct.timeOver() && !captcha.isResolved()) {
+				claim.getPanel().nextStep("Waiting for captcha answer ... "
+						+ ct.getSecondsLeft());
+				CoinbotApplication.ui.captchaQueue.getCaptchaPanel(captcha)
+					.setTimer(ct.getSecondsLeft());
+			}
+			
+			if(captcha.isResolved()) {
+				WebElement captchaInput = driver.findElementById("adcopy_response");
+				captchaInput.sendKeys(captcha.getAnswer());
+				captchaInput.submit();
+			} else {
+				// F5
+			}
+			
+			// Desencolar captcha
+			CoinbotApplication.bot.getCaptchaQueue().deQueue(captcha);
+			
+			//claim.getPanel().nextStep("Detecting Antibot");
+			
+			//claim.getPanel().nextStep("Finding Btc input address");
+			
+			//claim.getPanel().nextStep("Submiting ...");
+			
+			//claim.getPanel().nextStep("Checking response");
+			
+			//claim.getPanel().nextStep("Successfull claim!");
+			
+			//claim.getPanel().nextStep("Failed claim!");
+			
+			
 			// Detectar antibot (puzzle no soportado)
 			// Resolver antibot
+			
 			// Detectar input address (input no encontrada)
 			// poner address
+			
 			// submit
 			// leer errores / notificaciones
 			

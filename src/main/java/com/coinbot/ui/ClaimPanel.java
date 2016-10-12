@@ -38,7 +38,7 @@ public class ClaimPanel extends JPanel {
 
 	public ClaimPanel(String ip, String port, String faucet) {
         setMaximumSize(new Dimension((int) getMaximumSize().getWidth(), 35));
-		setLayout(new MigLayout("", "[78px,grow][78px,grow][150px:150px]", "[20px]"));
+		setLayout(new MigLayout("", "[150px:120px:150px,left][grow,left][200px:200px:200px,center]", "[20px]"));
 		
 		lblName = new JLabel(faucet);
 		add(lblName, "cell 0 0,growx");

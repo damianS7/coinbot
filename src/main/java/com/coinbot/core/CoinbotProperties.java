@@ -31,7 +31,7 @@ public class CoinbotProperties extends Properties {
 	private boolean modyfied = false;
 	private File file;
 	private String[][] fields = { { "timeout", "15" }, { "workers", "1" },
-			{ "auto_captcha", "false" },
+			{ "auto_captcha", "false" }, { "use_rotator_faucets", "false" },
 			{ "captcha_timeout", "30" } };
 
 	public CoinbotProperties(File file) throws IOException {

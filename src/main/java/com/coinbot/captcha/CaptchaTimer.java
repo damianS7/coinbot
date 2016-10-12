@@ -14,36 +14,51 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.core;
+package com.coinbot.captcha;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.coinbot.captcha.Captcha;
-
-public class CaptchaQueue implements Runnable {
-	private List<Captcha> queue = new ArrayList<Captcha>();
+public class CaptchaTimer implements Runnable {
+	private int seconds = 0;
+	private boolean timeOver = false;
+	private Captcha captcha;
 	
-	public void toQueue(Captcha captcha) {
-		queue.add(captcha);
-		CoinbotApplication.ui.captchaQueue.addCaptcha(captcha);
+	public CaptchaTimer(Captcha captcha) {
+		this.captcha = captcha;
+		this.seconds = captcha.getExpirationTime();
 	}
 	
-	public void deQueue(Captcha captcha) {
-		queue.remove(captcha);
-		CoinbotApplication.ui.captchaQueue.removeCaptcha(captcha);
+	public void start() {
+		new Thread(this).start();
 	}
 	
-	public List<Captcha> getQueue() {
-		return new ArrayList<Captcha>(queue);
+	public void stop() {
+		timeOver = true;
 	}
-
+	
+	public int getSecondsLeft() {
+		return seconds;
+	}
+	
+	public boolean timeOver() {
+		return timeOver;
+	}
+	
 	@Override
 	public void run() {
-		for (Captcha captcha : getQueue()) {
-			if(captcha.hasExpired()) {
-				deQueue(captcha);
+		while(!captcha.isResolved() && !timeOver()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			
+			if(seconds <= 0) {
+				timeOver = true;
+				captcha.expired();
+				break;
+			}
+			
+			seconds--;
 		}
 	}
+
 }

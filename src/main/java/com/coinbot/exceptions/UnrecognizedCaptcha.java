@@ -14,36 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.core;
+package com.coinbot.exceptions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.coinbot.captcha.Captcha;
-
-public class CaptchaQueue implements Runnable {
-	private List<Captcha> queue = new ArrayList<Captcha>();
+public class UnrecognizedCaptcha extends Exception {
+	private static final long serialVersionUID = -3603813823734975055L;
 	
-	public void toQueue(Captcha captcha) {
-		queue.add(captcha);
-		CoinbotApplication.ui.captchaQueue.addCaptcha(captcha);
+	public UnrecognizedCaptcha(String message) {
+		super(message);
 	}
 	
-	public void deQueue(Captcha captcha) {
-		queue.remove(captcha);
-		CoinbotApplication.ui.captchaQueue.removeCaptcha(captcha);
-	}
-	
-	public List<Captcha> getQueue() {
-		return new ArrayList<Captcha>(queue);
-	}
-
-	@Override
-	public void run() {
-		for (Captcha captcha : getQueue()) {
-			if(captcha.hasExpired()) {
-				deQueue(captcha);
-			}
-		}
+	public UnrecognizedCaptcha() {
+		this("");
 	}
 }

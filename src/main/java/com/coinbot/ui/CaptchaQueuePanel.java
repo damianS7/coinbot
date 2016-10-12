@@ -17,13 +17,19 @@
 package com.coinbot.ui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
+import com.coinbot.captcha.Captcha;
+
 public class CaptchaQueuePanel extends JPanel {
+	private static final long serialVersionUID = -8529873522109527318L;
+	private List<CaptchaPanel> panels = new ArrayList<CaptchaPanel>();
 	private JPanel queuePanel;
 	
 	public CaptchaQueuePanel() {
@@ -38,13 +44,33 @@ public class CaptchaQueuePanel extends JPanel {
 		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
 	}
 	
-	public void addCaptcha(CaptchaPanel panel) {
-		queuePanel.add(panel);
+	public CaptchaPanel getCaptchaPanel(Captcha captcha) {
+		for (CaptchaPanel panel : panels) {
+			if(panel.getCaptcha() == captcha) {
+				return panel;
+			}
+		}
+		return null;
+	}
+	
+	public void addCaptcha(Captcha captcha) {
+		CaptchaPanel c = getCaptchaPanel(captcha); 
+		if(c!=null) {
+			return; // El captcha ya esta añadido
+		}
+		c = new CaptchaPanel(captcha);
+		panels.add(c);
+		queuePanel.add(c);
 		queuePanel.revalidate();
 	}
 	
-	public void removeCaptcha(CaptchaPanel panel) {
-		queuePanel.remove(panel);
+	public void removeCaptcha(Captcha captcha) {
+		CaptchaPanel c = getCaptchaPanel(captcha);
+		if(c==null) {
+			return; // El captcha no esta añadido
+		}
+		panels.remove(c);
+		queuePanel.remove(c);
 		queuePanel.revalidate();
 	}
 }
