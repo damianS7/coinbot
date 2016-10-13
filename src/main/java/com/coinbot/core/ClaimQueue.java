@@ -53,10 +53,10 @@ public class ClaimQueue {
 	public void start() {
 		// Asignacion de claims
 		
-		List<String> address = CoinbotApplication.bot.getAddresses();
-		List<Faucet> faucets = CoinbotApplication.bot.getFaucets();
+		List<String> address = CoinbotApplication.addressDatabase.getAddresses();
+		List<Faucet> faucets = CoinbotApplication.faucetDatabase.getFaucets();
 		
-		for (Proxy p : CoinbotApplication.bot.getProxies()) {
+		for (Proxy p : CoinbotApplication.proxyDatabase.getProxies()) {
 			for (Faucet f : faucets) {
 				int index = queue.size();
 				

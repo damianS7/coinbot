@@ -17,13 +17,13 @@
 package com.coinbot.captcha;
 
 public class CaptchaTimer implements Runnable {
-	private int seconds = 0;
-	private boolean timeOver = false;
 	private Captcha captcha;
+	private boolean expired = false;
+	private int seconds = 0;
 	
-	public CaptchaTimer(Captcha captcha) {
+	public CaptchaTimer(Captcha captcha, int seconds) {
 		this.captcha = captcha;
-		this.seconds = captcha.getExpirationTime();
+		this.seconds = seconds;
 	}
 	
 	public void start() {
@@ -31,20 +31,20 @@ public class CaptchaTimer implements Runnable {
 	}
 	
 	public void stop() {
-		timeOver = true;
+		expired = true;
 	}
 	
 	public int getSecondsLeft() {
 		return seconds;
 	}
 	
-	public boolean timeOver() {
-		return timeOver;
+	public boolean isExpired() {
+		return expired;
 	}
 	
 	@Override
 	public void run() {
-		while(!captcha.isResolved() && !timeOver()) {
+		while(!captcha.resolved() && !isExpired()) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -52,8 +52,8 @@ public class CaptchaTimer implements Runnable {
 			}
 			
 			if(seconds <= 0) {
-				timeOver = true;
 				captcha.expired();
+				expired = true;
 				break;
 			}
 			

@@ -14,24 +14,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.captcha;
+package com.coinbot.core;
 
-import java.awt.image.BufferedImage;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class SolveMedia extends CaptchaService {
-
-	public SolveMedia(BufferedImage image) {
-		super(image);
+public class InputAddressDetector {
+	private WebDriver driver;
+	
+	public InputAddressDetector(WebDriver driver) {
+		this.driver = driver;
 	}
-
-	@Override
-	public void answerToInput(WebDriver driver) {
-		WebElement input = driver.findElement(By.id("adcopy_response"));
-		input.sendKeys(getAnswer());
+	
+	public void insertAddress(String address) {
+		List<WebElement> inputs = driver.findElements(By.tagName("input"));
+		for (WebElement input : inputs) {
+			if(input.getAttribute("name").length() > 20) {
+				input.sendKeys(address);
+			}
+		}
 	}
-
 }

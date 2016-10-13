@@ -17,18 +17,25 @@
 package com.coinbot.database;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.coinbot.faucet.Claim;
+import com.coinbot.faucet.Faucet;
 
 public class FaucetDatabase extends FileDatabase {
-
+	
 	public FaucetDatabase(File file) {
 		super(file);
 	}
 	
-	public List<String> getFaucets() {
-		return getLines();
+	public List<Faucet> getFaucets() {
+		List<Faucet> faucets = new ArrayList<Faucet>();
+		
+		for (String line : getLines()) {
+			faucets.add(new Faucet(line));
+		}
+		
+		return faucets;
 	}
 	
 	public void setFaucets(List<String> faucets) {

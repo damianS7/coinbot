@@ -17,31 +17,46 @@
 package com.coinbot.database;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+
+import javax.imageio.ImageIO;
 
 import com.coinbot.captcha.Captcha;
 
 public class CaptchaDatabase extends FileDatabase {
-	private List<Captcha> captchas = new ArrayList<Captcha>();
+	private List<CaptchaHash> captchaHashes = new ArrayList<CaptchaHash>();
 	
 	public CaptchaDatabase(File file){
 		super(file);
 	}
 	
-	public List<Captcha> getCaptchas() {
-		return new ArrayList<Captcha>(captchas);
+	public String getAnswer(String hash) {
+		for (CaptchaHash ch : captchaHashes) {
+			if(ch.getHash().equals(hash)) {
+				if(!ch.getAnswer().isEmpty()) {
+					return ch.getAnswer();
+				}
+			}
+		}
+		return null;
+	}
+	
+	public void addCaptcha(CaptchaHash captchaHash) {
+		captchaHashes.add(captchaHash);
+		save();
+	}
+	
+	public List<CaptchaHash> getCaptchasHashes() {
+		return new ArrayList<CaptchaHash>(captchaHashes);
 	}
 	
 	@Override
 	public void save() {
 		List<String> lines = new ArrayList<String>();
 		
-		for (Captcha captcha : captchas) {
+		for (CaptchaHash captcha : getCaptchasHashes()) {
 			lines.add(captcha.getHash() + "=" + captcha.getAnswer());
 		}
 		
@@ -57,16 +72,16 @@ public class CaptchaDatabase extends FileDatabase {
 				String[] s = line.split("=");
 				
 				if(s.length == 1) {
-					captchas.add(new Captcha(s[0]));
+					captchaHashes.add(new CaptchaHash(s[0], ""));
 				}
 				
 				if(s.length == 2) {
-					captchas.add(new Captcha(s[0], s[1]));
+					captchaHashes.add(new CaptchaHash(s[0], s[1]));
 				}
 			}
 		}
 		
-		return captchas.size();
+		return captchaHashes.size();
 	}
 	
 }

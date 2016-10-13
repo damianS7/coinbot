@@ -52,14 +52,14 @@ public class CaptchaPanel extends JPanel {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					captcha.resolve(input.getText());
+					captcha.setAnswer(input.getText());
 				}
 			}
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-					captcha.resolve(input.getText());
+					captcha.setAnswer(input.getText());
 				}
 			}
 		});

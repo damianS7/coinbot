@@ -18,60 +18,39 @@ package com.coinbot.captcha;
 
 import java.awt.image.BufferedImage;
 
-import com.coinbot.ui.CaptchaPanel;
-import com.thoughtworks.selenium.webdriven.commands.GetExpression;
+public abstract class Captcha {
+	protected BufferedImage puzzle;
+	protected String answer;
+	protected boolean expired = false;
 
-public class Captcha {
-	private BufferedImage image;
-	private String hash;
-	private String answer;
-	private boolean resolved = false;
-	private int expirationTime = 45;
-	private boolean expired = false;
-	
-	public Captcha(BufferedImage image) {
-		this.image = image;
-	}
-	
-	public Captcha(String hash) {
-		this.hash = hash;
-	}
-	
-	public Captcha(String hash, String answer) {
-		this.answer = answer;
-		this.hash = hash;
+	public Captcha(BufferedImage puzzle) {
+		this.puzzle = puzzle;
 	}
 	
 	public BufferedImage getImage() {
-		return image;
+		return puzzle;
+	}
+	
+	public void setAnswer(String newAnswer) {
+		this.answer = newAnswer;
 	}
 	
 	public String getAnswer() {
 		return answer;
 	}
 	
-	public String getHash() {
-		return hash;
+	public boolean resolved() {
+		if(answer!=null) {
+			return true;
+		}
+		return false;
 	}
 	
-	public boolean isResolved() {
-		return resolved;
-	}
-	
-	public void resolve(String answer) {
-		resolved = true;
-		this.answer = answer;
-	}
-	
-	public boolean hasExpired() {
+	public boolean isExpired() {
 		return expired;
 	}
 	
 	public void expired() {
 		expired = true;
-	}
-
-	public int getExpirationTime() {
-		return expirationTime;
 	}
 }

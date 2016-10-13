@@ -17,10 +17,13 @@
 package com.coinbot.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.imageio.ImageIO;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -32,7 +35,9 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 
 import com.coinbot.captcha.Captcha;
 import com.coinbot.captcha.CaptchaDetector;
+import com.coinbot.captcha.CaptchaService;
 import com.coinbot.captcha.CaptchaTimer;
+import com.coinbot.database.CaptchaHash;
 import com.coinbot.exceptions.UnrecognizedCaptcha;
 import com.coinbot.faucet.Claim;
 import com.coinbot.proxy.Proxy;
@@ -81,6 +86,7 @@ public class Worker implements Runnable {
 		CoinbotApplication.ui.workerQueue.addWorker(workerPanel);
 		
 		while(CoinbotApplication.bot.isRunning()) {
+			// Sacamos un "claim" de la cola
 			Claim claim = CoinbotApplication.bot.getClaimQueue().next();
 			if(claim == null) {
 				continue;
@@ -105,7 +111,7 @@ public class Worker implements Runnable {
 			// Detectando captcha
 			claim.getPanel().nextStep("Detecting Captcha");
 			CaptchaDetector captchaDetector = new CaptchaDetector();
-			Captcha captcha = null;
+			CaptchaService captcha = null;
 			
 			try {
 				captcha = captchaDetector.find(driver, 
@@ -122,62 +128,93 @@ public class Worker implements Runnable {
 				continue;
 			}
 			
-			claim.getPanel().nextStep("Waiting for captcha answer ...");
+			claim.getPanel().nextStep("Trying auto resolving");
+			// Intentamos buscar el hash en la DB 
+			CaptchaHash ch = new CaptchaHash(captcha);
+			String answer = CoinbotApplication.captchaDatabase.getAnswer(ch.getHash());
 			
-			// Encolar captcha
-			CoinbotApplication.bot.getCaptchaQueue().toQueue(captcha);
-			
-			// Esperar la resolucion del captcha
-			CaptchaTimer ct = new CaptchaTimer(captcha);
-			ct.start();
-			
-			// Esperamos a la resolucion
-			while(!ct.timeOver() && !captcha.isResolved()) {
-				claim.getPanel().nextStep("Waiting for captcha answer ... "
-						+ ct.getSecondsLeft());
-				CoinbotApplication.ui.captchaQueue.getCaptchaPanel(captcha)
-					.setTimer(ct.getSecondsLeft());
+			// Si no enctramos la respuesta en la bd se la pedimos al usuario
+			if(answer == null) {
+				claim.getPanel().nextStep("Waiting for captcha answer ...");
+				
+				// Encolar captcha
+				CoinbotApplication.bot.getCaptchaQueue().toQueue(captcha);
+				
+				// Esperar la resolucion del captcha
+				CaptchaTimer timer = new CaptchaTimer(captcha, 35);
+				timer.start();
+				
+				// Esperamos a la resolucion
+				while(!timer.isExpired() && !captcha.resolved()) {
+					CoinbotApplication.ui.captchaQueue.getCaptchaPanel(captcha)
+					.setTimer(timer.getSecondsLeft());
+				}
+				
+				if(!captcha.resolved()) {
+					CoinbotApplication.captchaDatabase.addCaptcha(ch);
+					continue;
+				}
 			}
 			
-			if(captcha.isResolved()) {
-				WebElement captchaInput = driver.findElementById("adcopy_response");
-				captchaInput.sendKeys(captcha.getAnswer());
-				captchaInput.submit();
-			} else {
-				// F5
+			// Guardamos el captcha en la DB
+			CoinbotApplication.captchaDatabase.addCaptcha(new CaptchaHash(captcha));
+			
+			// Y la imagen en un archivo
+			try {
+				ImageIO.write(captcha.getImage(), "png", 
+						new File("coinbot/captchas/" + ch.getHash() + ".png"));
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			
+			// Envia la respuesta al input
+			captcha.answerToInput(driver);
 			
 			// Desencolar captcha
 			CoinbotApplication.bot.getCaptchaQueue().deQueue(captcha);
 			
+			// Escribir address
+			claim.getPanel().nextStep("Detecting input address");
+			InputAddressDetector iad = new InputAddressDetector(driver);
+			iad.insertAddress(claim.getBtcAddress());
+			
 			//claim.getPanel().nextStep("Detecting Antibot");
-			
-			//claim.getPanel().nextStep("Finding Btc input address");
-			
-			//claim.getPanel().nextStep("Submiting ...");
-			
-			//claim.getPanel().nextStep("Checking response");
-			
-			//claim.getPanel().nextStep("Successfull claim!");
-			
-			//claim.getPanel().nextStep("Failed claim!");
-			
-			
 			// Detectar antibot (puzzle no soportado)
 			// Resolver antibot
 			
-			// Detectar input address (input no encontrada)
-			// poner address
-			
 			// submit
-			// leer errores / notificaciones
+			claim.getPanel().nextStep("Submiting ...");
+			WebElement submit = driver.findElement(By.id("address"));
+			submit.submit();
 			
+			claim.getPanel().nextStep("Checking response");
+			//claim.getPanel().nextStep("Successfull claim!");
+			/*WebElement out = null;
+			
+			try {
+				out = driver.findElement(By.className("alert-success"));
+			} catch (NoSuchElementException e) {
+				
+			}
+			
+			try {
+				out = driver.findElement(By.className("alert-danger"));
+			} catch (NoSuchElementException e) {
+			}
+			*/
+			//claim.getPanel().nextStep("Failed claim!");
 			
 			claim.getPanel().done();
 			workerPanel.removeClaim(claim.getPanel());
 			claim.getTimer().done(2000, 1);
 			CoinbotApplication.bot.getClaimQueue().toQueue(claim);
 			
+			try {
+				Thread.sleep(25000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		try {

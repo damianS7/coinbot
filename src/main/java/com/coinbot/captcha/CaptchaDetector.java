@@ -48,6 +48,7 @@ public class CaptchaDetector {
 		if(iframe != null) {
 			driver.switchTo().frame(iframe);
 			JavascriptExecutor js2 = (JavascriptExecutor)driver;
+			js2.executeScript("document.getElementById('loading').style.display = 'none'");
 			js2.executeScript("document.getElementById('overlay').style.display = 'inline'");
 			driver.switchTo().defaultContent();
 		}
@@ -80,12 +81,8 @@ public class CaptchaDetector {
 		BufferedImage shot = captureCaptcha(driver, captcha); 
 		return new SolveMedia(shot);
 	}
-	
-	private ReCaptcha findReCaptcha() {
-		return null;
-	}
-	
-	public Captcha find(WebDriver driver, WebElement body) throws UnrecognizedCaptcha {
+
+	public CaptchaService find(WebDriver driver, WebElement body) throws UnrecognizedCaptcha {
 		SolveMedia sm = findSolvemedia(driver, body);
 		if(sm != null) {
 			return sm;

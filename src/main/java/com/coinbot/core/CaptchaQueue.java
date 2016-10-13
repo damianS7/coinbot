@@ -41,7 +41,7 @@ public class CaptchaQueue implements Runnable {
 	@Override
 	public void run() {
 		for (Captcha captcha : getQueue()) {
-			if(captcha.hasExpired()) {
+			if(captcha.isExpired()) {
 				deQueue(captcha);
 			}
 		}

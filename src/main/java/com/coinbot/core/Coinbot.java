@@ -16,12 +16,6 @@
  */
 package com.coinbot.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.coinbot.captcha.Captcha;
-import com.coinbot.faucet.Faucet;
-import com.coinbot.proxy.Proxy;
 
 
 /**
@@ -33,23 +27,12 @@ public class Coinbot {
 	private ClaimQueue claimQueue;
 	private CaptchaQueue captchaQueue;
 	private boolean running = false;
-	private List<Proxy> proxies = new ArrayList<Proxy>();
-	private List<Faucet> faucets = new ArrayList<Faucet>();
-	private List<String> addresses = new ArrayList<String>();
-	private List<Captcha> captchas = new ArrayList<Captcha>();
 	
 	public Coinbot() {
 		captchaQueue = new CaptchaQueue();
 		claimQueue = new ClaimQueue();
 		workerQueue = new WorkerQueue();
 		workerQueue.setMaxWorkers(CoinbotApplication.coinbotProperties.getWorkers());
-		addresses = CoinbotApplication.addressDatabase.getAddresses();
-		proxies = CoinbotApplication.proxyDatabase.getProxies();
-		captchas = CoinbotApplication.captchaDatabase.getCaptchas();
-		
-		for (String f : CoinbotApplication.faucetDatabase.getFaucets()) {
-			faucets.add(new Faucet(f));
-		}
 	}
 	
 	public CaptchaQueue getCaptchaQueue() {
@@ -58,22 +41,6 @@ public class Coinbot {
 	
 	public ClaimQueue getClaimQueue() {
 		return claimQueue;
-	}
-	
-	public List<Captcha> getCaptchas() {
-		return captchas;
-	}
-	
-	public List<String> getAddresses() {
-		return addresses;
-	}
-	
-	public List<Faucet> getFaucets() {
-		return new ArrayList<Faucet>(faucets);
-	}
-	
-	public List<Proxy> getProxies() {
-		return new ArrayList<Proxy>(proxies);
 	}
 	
 	public boolean isRunning() {

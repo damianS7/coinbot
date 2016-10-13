@@ -18,20 +18,16 @@ package com.coinbot.captcha;
 
 import java.awt.image.BufferedImage;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-public class SolveMedia extends CaptchaService {
+public class ReCaptcha extends CaptchaService {
 
-	public SolveMedia(BufferedImage image) {
-		super(image);
+	public ReCaptcha(BufferedImage puzzle) {
+		super(puzzle);
 	}
 
 	@Override
 	public void answerToInput(WebDriver driver) {
-		WebElement input = driver.findElement(By.id("adcopy_response"));
-		input.sendKeys(getAnswer());
 	}
 
 }
