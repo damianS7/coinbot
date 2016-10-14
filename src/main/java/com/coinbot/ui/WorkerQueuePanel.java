@@ -48,5 +48,6 @@ public class WorkerQueuePanel extends JPanel {
 	public void removeWorker(WorkerPanel panel) {
 		queuePanel.remove(panel);
 		queuePanel.revalidate();
+		queuePanel.repaint();
 	}
 }

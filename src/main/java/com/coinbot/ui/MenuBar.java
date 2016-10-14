@@ -39,7 +39,7 @@ public class MenuBar {
 		fileStart.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				start();
+				CoinbotApplication.bot.start();
 			}
 		});
 		
@@ -47,7 +47,7 @@ public class MenuBar {
 		fileStop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				stop();
+				CoinbotApplication.bot.stop();
 			}
 		});
 		menuFile.add(fileStop);
@@ -56,7 +56,8 @@ public class MenuBar {
 		fileExit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				exit();
+				CoinbotApplication.bot.stop();
+				System.exit(0);
 			}
 		});
 		menuFile.add(fileExit);
@@ -68,10 +69,28 @@ public class MenuBar {
 		editPreferences.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				editPreferences();
+				new Preferences();
 			}
 		});
 		menuEdit.add(editPreferences);
+		
+		JMenuItem editAddress = new JMenuItem("BTC Addresses");
+		editAddress.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Addresses();
+			}
+		});
+		menuEdit.add(editAddress);
+		
+		JMenuItem editFaucets = new JMenuItem("Faucets");
+		editFaucets.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Faucets();
+			}
+		});
+		menuEdit.add(editFaucets);
 		
 		JMenu menuHelp = new JMenu("Help");
 		menu.add(menuHelp);
@@ -79,7 +98,7 @@ public class MenuBar {
 		helpAbout.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				showAbout();
+				new About();
 			}
 		});
 		menuHelp.add(helpAbout);
@@ -89,23 +108,4 @@ public class MenuBar {
 		return menu;
 	}
 
-	protected void editPreferences() {
-		new Preferences();
-	}
-	protected void start() {
-		CoinbotApplication.bot.start();
-	}
-	
-	protected void stop() {
-		CoinbotApplication.bot.stop();
-	}
-	
-	protected void showAbout() {
-		new About();
-	}
-	
-	protected void exit() {
-		stop();
-		System.exit(0);
-	}
 }

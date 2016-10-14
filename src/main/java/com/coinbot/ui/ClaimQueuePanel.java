@@ -46,5 +46,6 @@ public class ClaimQueuePanel extends JPanel {
 	public void removeClaim(ClaimPanel panel) {
 		queuePanel.remove(panel);
 		queuePanel.revalidate();
+		queuePanel.repaint();
 	}
 }

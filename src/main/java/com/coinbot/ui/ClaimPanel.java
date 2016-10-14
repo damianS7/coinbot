@@ -17,34 +17,23 @@
 package com.coinbot.ui;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 
-import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.Timer;
-
-import com.coinbot.core.Worker;
 
 import net.miginfocom.swing.MigLayout;
 
 public class ClaimPanel extends JPanel {
-	private JLabel proxy;
 	private JProgressBar progressBar;
 	private JLabel lblName;
 
-	public ClaimPanel(String ip, String port, String faucet) {
+	public ClaimPanel(String faucet) {
         setMaximumSize(new Dimension((int) getMaximumSize().getWidth(), 35));
 		setLayout(new MigLayout("", "[150px:120px:150px,left][grow,left][200px:200px:200px,center]", "[20px]"));
 		
 		lblName = new JLabel(faucet);
 		add(lblName, "cell 0 0,growx");
-		
-		proxy = new JLabel(ip + ":" + port);
-		add(proxy, "cell 1 0,growx,aligny center");
 		
 		progressBar = new JProgressBar();
 		add(progressBar, "cell 2 0,growx,aligny top");
@@ -54,6 +43,11 @@ public class ClaimPanel extends JPanel {
 	public void nextStep(String step) {
 		progressBar.setValue(progressBar.getValue()+1);
 		progressBar.setString(step);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void ready() {

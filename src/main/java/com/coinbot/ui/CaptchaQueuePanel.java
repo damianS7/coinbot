@@ -72,5 +72,7 @@ public class CaptchaQueuePanel extends JPanel {
 		panels.remove(c);
 		queuePanel.remove(c);
 		queuePanel.revalidate();
+		queuePanel.repaint();
+		//queuePanel.updateUI();
 	}
 }

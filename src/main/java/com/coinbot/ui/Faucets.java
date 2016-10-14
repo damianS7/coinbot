@@ -19,35 +19,38 @@ package com.coinbot.ui;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 
 import com.coinbot.core.CoinbotApplication;
 
-
-public class Preferences extends JDialog {
-	private static final long serialVersionUID = 1488391075068984462L;
-	private JCheckBox autoCaptcha;
-	private JSpinner workers;
-
-	public Preferences() {
-		super(CoinbotApplication.ui.frame, "Preferences");
+public class Faucets extends JDialog {
+	private JTextArea input;
+	
+	public Faucets() {
+		super(CoinbotApplication.ui.frame, "Faucets");
 		setModal(true);
-		getContentPane().setLayout(new MigLayout("", "[grow]", "[85px][35px]"));
+		getContentPane().setLayout(new MigLayout("", "[300px:n,grow]", "[200px:n,grow][-17.00,grow][35px]"));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		getContentPane().add(scrollPane, "cell 0 0,grow");
+		
+		input = new JTextArea(CoinbotApplication.faucetDatabase.toString());
+		scrollPane.setViewportView(input);
 		
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
-		getContentPane().add(panel, "cell 0 1,alignx right,aligny top");
+		getContentPane().add(panel, "cell 0 2,alignx right,aligny top");
 		
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
@@ -68,44 +71,22 @@ public class Preferences extends JDialog {
 		btnSave.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(btnSave);
 		
-		JPanel panel_1 = new JPanel();
-		getContentPane().add(panel_1, "cell 0 0,growx,aligny top");
-		panel_1.setLayout(new MigLayout("", "[150px:n,grow][150,grow,left]", "[][][]"));
-		
-		JLabel lblThreads = new JLabel("Workers");
-		panel_1.add(lblThreads, "cell 0 2,growx");
-		
-		workers = new JSpinner();
-		workers.getModel().setValue(CoinbotApplication.coinbotProperties.getWorkers());
-		panel_1.add(workers, "flowy,cell 1 2,alignx right");
-		
-		JLabel lblAutoCaptcha = new JLabel("Auto-captcha");
-		panel_1.add(lblAutoCaptcha, "cell 0 0,growx");
-		
-		autoCaptcha = new JCheckBox("");
-		autoCaptcha.setSelected(CoinbotApplication.coinbotProperties.isCaptchaQueueEnabled());
-		panel_1.add(autoCaptcha, "cell 1 0,alignx right");
-		
-		JLabel lblCaptchaTimeout = new JLabel("Captcha timeout");
-		panel_1.add(lblCaptchaTimeout, "cell 0 1,growx");
-		
-		JSpinner spinner_1 = new JSpinner();
-		panel_1.add(spinner_1, "cell 1 1,alignx right");
-		
 		pack();
 		setLocationRelativeTo(CoinbotApplication.ui.frame);
 		setVisible(true);
 	}
 	
 	public void save() {
-		CoinbotApplication.coinbotProperties.setCaptchaQueue(autoCaptcha.isSelected());
-		CoinbotApplication.coinbotProperties.setWorkers(workers.getValue().toString());
 		
-		try {
-			CoinbotApplication.coinbotProperties.save();
-		} catch (IOException e) {
-			e.printStackTrace();
+		String[] faucets = input.getText().split("\n");
+		List<String> faucetList = new ArrayList<String>();
+		
+		for (String faucet : faucets) {
+			faucetList.add(faucet);
 		}
+		
+		CoinbotApplication.faucetDatabase.setFaucets(faucetList);
+		CoinbotApplication.faucetDatabase.save();
 		dispose();
 	}
 }
