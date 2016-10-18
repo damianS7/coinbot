@@ -1,18 +1,1 @@
-Que es esto?
-Coinbot ese una aplicacion en java que consigue bitcoin de forma automatica
-usando faucets
-
-----
-Lanzar un thread por cada proxy ? 
-
-
-
-Iterar sobre proxys y hacer claim en todas las web
-
-Iteras sobre webs y hacer claim con todos los proxys
-
-Borrar faucets que no funcionan
-
-Basic auth selenium con Robot
-
-Sistema de prioridad .. las faucets con mas claims tienen prioridad
+What is Coinbot?
