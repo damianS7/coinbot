@@ -16,12 +16,6 @@
  */
 package com.coinbot.core;
 
-import java.io.IOException;
+public class CoinbotProperties {
 
-public class CoinbotApplication {
-	public static CoinbotProperties config;
-	
-	public static void main(String[] args) throws IOException {
-		
-	}
 }
