@@ -16,12 +16,19 @@
  */
 package com.coinbot.core;
 
+import java.io.File;
 import java.io.IOException;
 
+/**
+ * Esta clase es el lanzador de la aplicacion 
+ * @author danjian
+ */
 public class CoinbotApplication {
+	public final static String APP_PATH = "coinbot/";
 	public static CoinbotProperties config;
 	
 	public static void main(String[] args) throws IOException {
-		
+		File config = new File(APP_PATH + "coinbot.properties");
+		config = new CoinbotProperties();
 	}
 }
