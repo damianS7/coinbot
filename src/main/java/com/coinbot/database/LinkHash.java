@@ -16,29 +16,20 @@
  */
 package com.coinbot.database;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.coinbot.faucet.Faucet;
-
-public class FaucetDatabase extends FileDatabase {
+public class LinkHash {
+	private String hash;
+	private int order;
 	
-	public FaucetDatabase(File file) {
-		super(file);
-	}
-
-	public List<Faucet> getFaucets() {
-		List<Faucet> faucets = new ArrayList<Faucet>();
-		
-		for (String line : getLines()) {
-			faucets.add(new Faucet(line));
-		}
-		
-		return faucets;
+	public LinkHash(String hash, int order) {
+		this.hash = hash;
+		this.order = order;
 	}
 	
-	public void setFaucets(List<String> faucets) {
-		setLines(faucets);
+	public String getHash() {
+		return hash;
+	}
+	
+	public int getOrder() {
+		return order;
 	}
 }

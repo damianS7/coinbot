@@ -17,13 +17,8 @@
 package com.coinbot.database;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
-import com.coinbot.captcha.Captcha;
 
 public class CaptchaDatabase extends FileDatabase {
 	private List<CaptchaHash> captchaHashes = new ArrayList<CaptchaHash>();

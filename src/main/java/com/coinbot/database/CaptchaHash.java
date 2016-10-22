@@ -16,22 +16,15 @@
  */
 package com.coinbot.database;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import javax.imageio.ImageIO;
-
 import com.coinbot.captcha.Captcha;
+import com.coinbot.utils.ImageHash;
 
 public class CaptchaHash {
 	private String hash;
 	private String answer;
 	
 	public CaptchaHash(Captcha captcha) {
-		this(imageToHash(captcha.getImage()), captcha.getAnswer());
+		this(ImageHash.imageToHash(captcha.getImage()), captcha.getAnswer());
 	}
 	
 	public CaptchaHash(String hash, String answer) {
@@ -44,35 +37,6 @@ public class CaptchaHash {
 	}
 	
 	public String getHash() {
-		return hash;
-	}
-	
-	private static String imageToHash(BufferedImage image) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
-		try {
-			ImageIO.write(image, "png", baos);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		byte[] data = baos.toByteArray();
-		
-		MessageDigest md = null;
-		try {
-			md = MessageDigest.getInstance("MD5");
-			md.update(data);
-		} catch (NoSuchAlgorithmException e1) {
-			e1.printStackTrace();
-		}
-		
-		byte[] hashByteArray = md.digest();
-		
-		String hash = "";
-		for (byte b : hashByteArray) {
-			hash += Byte.toString(b);
-		}
-		
 		return hash;
 	}
 }

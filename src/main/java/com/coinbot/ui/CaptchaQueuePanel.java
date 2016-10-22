@@ -25,11 +25,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
+import com.coinbot.antibot.AntibotPuzzle;
 import com.coinbot.captcha.Captcha;
 
 public class CaptchaQueuePanel extends JPanel {
 	private static final long serialVersionUID = -8529873522109527318L;
 	private List<CaptchaPanel> panels = new ArrayList<CaptchaPanel>();
+	private List<AntibotPanel> abpanels = new ArrayList<AntibotPanel>();
 	private JPanel queuePanel;
 	
 	public CaptchaQueuePanel() {
@@ -53,6 +55,15 @@ public class CaptchaQueuePanel extends JPanel {
 		return null;
 	}
 	
+	public AntibotPanel getAntibotPanel(AntibotPuzzle ap) {
+		for (AntibotPanel abp : abpanels) {
+			if(abp.getAntibot() == ap) {
+				return abp;
+			}
+		}
+		return null;
+	}
+	
 	public void addCaptcha(Captcha captcha) {
 		CaptchaPanel c = getCaptchaPanel(captcha); 
 		if(c!=null) {
@@ -61,6 +72,23 @@ public class CaptchaQueuePanel extends JPanel {
 		c = new CaptchaPanel(captcha);
 		panels.add(c);
 		queuePanel.add(c);
+		queuePanel.revalidate();
+	}
+	
+	public void addAntibotPuzzle(AntibotPuzzle ap) {
+		AntibotPanel app = new AntibotPanel(ap);
+		abpanels.add(app);
+		queuePanel.add(app);
+		queuePanel.revalidate();
+	}
+	
+	public void removeAntibotPuzzle(AntibotPuzzle ap) {
+		AntibotPanel app = getAntibotPanel(ap);
+		if(app==null) {
+			return;
+		}
+		abpanels.remove(app);
+		queuePanel.remove(app);
 		queuePanel.revalidate();
 	}
 	
@@ -75,4 +103,6 @@ public class CaptchaQueuePanel extends JPanel {
 		queuePanel.repaint();
 		//queuePanel.updateUI();
 	}
+	
+	
 }

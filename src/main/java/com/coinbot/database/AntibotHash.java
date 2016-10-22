@@ -16,29 +16,38 @@
  */
 package com.coinbot.database;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.coinbot.faucet.Faucet;
+import com.coinbot.antibot.AntibotPuzzle;
+import com.coinbot.utils.ImageHash;
 
-public class FaucetDatabase extends FileDatabase {
+public class AntibotHash {
+	private String puzzleHash;
+	private List<LinkHash> linksHashes;
 	
-	public FaucetDatabase(File file) {
-		super(file);
+	public AntibotHash(AntibotPuzzle ap) {
+		this.puzzleHash = ImageHash.imageToHash(ap.getPuzzleImage());
+	}
+	
+	public AntibotHash(String puzzleHash, List<LinkHash> linkHashes) {
+		this.puzzleHash = puzzleHash;
+		this.linksHashes = linkHashes;
 	}
 
-	public List<Faucet> getFaucets() {
-		List<Faucet> faucets = new ArrayList<Faucet>();
-		
-		for (String line : getLines()) {
-			faucets.add(new Faucet(line));
+	public String getPuzzleHash() {
+		return puzzleHash;
+	}
+	
+	public LinkHash getLinkHash(String hash) {
+		for (LinkHash linkHash : linksHashes) {
+			if(linkHash.getHash().equals(hash)) {
+				return linkHash;
+			}
 		}
-		
-		return faucets;
+		return null;
 	}
 	
-	public void setFaucets(List<String> faucets) {
-		setLines(faucets);
+	public List<LinkHash> getLinksHash() {
+		return linksHashes;
 	}
 }

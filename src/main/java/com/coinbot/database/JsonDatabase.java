@@ -17,73 +17,70 @@
 package com.coinbot.database;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
-public class FileDatabase {
-	private List<String> lines = new ArrayList<String>();
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Esta clase se usa para interactuar con ficheros .json que usaremos como
+ * base de datos para almacenar informacion
+ * @author danjian
+ */
+public abstract class JsonDatabase {
 	private File file;
+	protected JSONObject jsonData;
 	
-	public FileDatabase(File file) {
+	public JsonDatabase(File file) {
 		this.file = file;
 	}
 	
-	public String toString() {
-		String s = "";
-		
-		for (String line : lines) {
-			s += line + "\n";
-		}
+	/**
+	 * @return Un string con el JSON
+	 */
+	public String getJson() {
+		return jsonData.toString(3);
+	}
 
-		return s.substring(0, s.length()-1);
-	}
-	
-	public List<String> getLines() {
-		return new ArrayList<String>(lines);
-	}
-	
-	public void addLine(String line) {
-		lines.add(line);
-	}
-	
-	public void setLines(List<String> newLines) {
-		lines.clear();
-		for (String line : newLines) {
-			lines.add(line);
-		}
-	}
-	
+	/**
+	 * Sobreescribe el fichero con el Json del objeto jsonData
+	 */
 	public void save() {
+		FileOutputStream fos;
 		try {
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(toString().getBytes());
+			fos = new FileOutputStream(file);
+			fos.write(getJson().getBytes());
 			fos.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Carga el Json del fichero y lo transforma en un objeto Json para
+	 * poder interactuar con el
+	 * @return el numero de objetos json cargados
+	 */
 	public int load() {
-		List<String> loadedLines = new ArrayList<String>();
+		byte[] bytes = null;
 		try {
-			loadedLines = Files.readAllLines(Paths.get(file.getAbsolutePath()));
+			bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		for (String line : loadedLines) {
-			if(!line.isEmpty()) {
-				String newLine = line.trim();
-				if(!lines.contains(newLine)) {
-					lines.add(newLine);
-				}
-			}
+		try {
+			jsonData = new JSONObject(new String(bytes));
+		} catch(JSONException e) {
+			// Si hay algun error cargamos un objeto vacio
+			jsonData = new JSONObject();
 		}
-		
-		return lines.size();
+		return jsonData.length();
 	}
 }

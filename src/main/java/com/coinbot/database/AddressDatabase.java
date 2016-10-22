@@ -17,11 +17,6 @@
 package com.coinbot.database;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AddressDatabase extends FileDatabase {
@@ -32,6 +27,14 @@ public class AddressDatabase extends FileDatabase {
 	
 	public List<String> getAddresses() {
 		return getLines();
+	}
+	
+	public String toString() {
+		String str = "";
+		for (String address : getAddresses()) {
+			str += address + "\n";
+		}
+		return str;
 	}
 	
 	public void setAddresses(List<String> addresses) {
