@@ -31,7 +31,12 @@ public class ClaimQueue {
 	
 	public void toQueue(Claim claim) {
 		queue.add(claim);
-		CoinbotApplication.ui.claimQueue.addClaim(claim.getPanel());
+		CoinbotApplication.ui.claimQueue.addClaim(claim);
+	}
+	
+	public void deQueue(Claim claim) {
+		queue.remove(claim);
+		CoinbotApplication.ui.claimQueue.removeClaim(claim);
 	}
 	
 	public Claim next() {
@@ -40,8 +45,7 @@ public class ClaimQueue {
 		if(!cs.isEmpty()) {
 			Claim claim = cs.get(0);
 			if(claim.getTimer().isReady()) {
-				queue.remove(claim);
-				CoinbotApplication.ui.claimQueue.removeClaim(claim.getPanel());
+				deQueue(claim);
 				return claim;
 			}
 		}

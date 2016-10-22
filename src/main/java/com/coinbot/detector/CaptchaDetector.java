@@ -36,6 +36,7 @@ import com.coinbot.captcha.CaptchaService;
 import com.coinbot.captcha.ReCaptcha;
 import com.coinbot.captcha.SolveMedia;
 import com.coinbot.exceptions.DetectionException;
+import com.coinbot.exceptions.UnrecognizedCaptcha;
 
 public class CaptchaDetector implements Detector {
 	private WebDriver driver;
@@ -94,7 +95,7 @@ public class CaptchaDetector implements Detector {
 	}
 
 	@Override
-	public void detect() throws DetectionException {
+	public void detect() throws DetectionException, UnrecognizedCaptcha {
 		// SM
 		this.captcha = detectSM();
 		if(this.captcha != null) {
@@ -107,6 +108,6 @@ public class CaptchaDetector implements Detector {
 			return;
 		}
 
-		throw new DetectionException("Captcha not recognized.");
+		throw new UnrecognizedCaptcha("Captcha not recognized.");
 	}
 }

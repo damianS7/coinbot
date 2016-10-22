@@ -31,8 +31,9 @@ public class CoinbotProperties extends Properties {
 	private boolean modyfied = false;
 	private File file;
 	private String[][] fields = { { "timeout", "15" }, { "workers", "1" },
-			{ "auto_captcha", "false" }, { "use_rotator_faucets", "false" },
-			{ "captcha_timeout", "30" } };
+			{ "2captcha_enabled", "false" }, { "2captcha_api", "" },
+			{ "captcha_queue_enabled", "false" },
+			{ "use_rotator_faucets", "false" } };
 
 	public CoinbotProperties(File file) throws IOException {
 		this.file = file;
@@ -58,7 +59,15 @@ public class CoinbotProperties extends Properties {
 	public void save() throws IOException {
 		store(new FileOutputStream(file), "Coinbot properties");
 	}
-
+	
+	public void set2Captcha(boolean active) {
+		setProperty("2captcha_enabled", Boolean.toString(active));
+	}
+	
+	public boolean is2CaptchaEnabled() {
+		return Boolean.parseBoolean(getProperty("2captcha_enabled"));
+	}
+	
 	public void setWorkers(String threads) {
 		setProperty("workers", threads);
 	}
@@ -67,11 +76,11 @@ public class CoinbotProperties extends Properties {
 		return Integer.parseInt(getProperty("workers"));
 	}
 	
-	public void setAutoCaptcha(boolean bool) {
-		setProperty("auto_captcha", Boolean.toString(bool));
+	public void setCaptchaQueue(boolean bool) {
+		setProperty("captcha_queue_enabled", Boolean.toString(bool));
 	}
 	
-	public boolean getAutoCaptcha() {
-		return Boolean.parseBoolean(getProperty("auto_captcha"));
+	public boolean isCaptchaQueueEnabled() {
+		return Boolean.parseBoolean(getProperty("captcha_queue_enabled"));
 	}
 }

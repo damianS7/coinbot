@@ -67,9 +67,6 @@ public class AntibotDetector implements Detector {
 			
 		}
 		
-		
-		
-		
 		throw new DetectionException("Antibot protection not found.");
 	}
 	

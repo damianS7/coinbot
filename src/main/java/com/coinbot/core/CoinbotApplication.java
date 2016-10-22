@@ -22,9 +22,10 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import com.coinbot.database.AddressDatabase;
+import com.coinbot.database.AntibotDatabase;
 import com.coinbot.database.CaptchaDatabase;
 import com.coinbot.database.FaucetDatabase;
-import com.coinbot.database.ProxyDatabase;
+import com.coinbot.faucet.Stats;
 import com.coinbot.ui.UI;
 
 public class CoinbotApplication {
@@ -32,10 +33,11 @@ public class CoinbotApplication {
 			.getName());
 	public static final String dirName = "coinbot/";
 	public static CoinbotProperties coinbotProperties;
-	public static ProxyDatabase proxyDatabase;
 	public static AddressDatabase addressDatabase;
 	public static FaucetDatabase faucetDatabase;
 	public static CaptchaDatabase captchaDatabase;
+	public static AntibotDatabase antibotDatabase;
+	public static Stats stats;
 	public static Coinbot bot;
 	public static UI ui;
 	
@@ -82,17 +84,7 @@ public class CoinbotApplication {
 				return;
 			}
 		}
-		
-		File proxy = new File(dirName + "proxy.txt");
-		if(!proxy.exists()) {
-			try {
-				proxy.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-		
+
 		File properties = new File(dirName + "coinbot.properties");
 		if(!properties.exists()) {
 			try {
@@ -103,9 +95,17 @@ public class CoinbotApplication {
 			}
 		}
 		
-		proxyDatabase = new ProxyDatabase(proxy);
-		LOGGER.info("Proxies cargados: " + proxyDatabase.load());
+		File antibot = new File(dirName + "antibotpuzzle.json");
+		if(!antibot.exists()) {
+			try {
+				antibot.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return;
+			}
+		}
 		
+		stats = new Stats();
 		addressDatabase = new AddressDatabase(bitcoinAddresses);
 		LOGGER.info("Direcciones btc cargadas: " + addressDatabase.load());
 		
@@ -115,8 +115,11 @@ public class CoinbotApplication {
 		captchaDatabase = new CaptchaDatabase(captcha);
 		LOGGER.info("Captchas cargados: " + captchaDatabase.load());
 		
+		antibotDatabase = new AntibotDatabase(antibot);
+		LOGGER.info("Antibots cargados: " + antibotDatabase.load());
+		
 		LOGGER.info("Cargando configuracion de la aplicacion");
-		coinbotProperties = new CoinbotProperties(properties);
+		coinbotProperties = new CoinbotProperties(antibot);
 		bot = new Coinbot();
 		
 		EventQueue.invokeLater(new Runnable() {

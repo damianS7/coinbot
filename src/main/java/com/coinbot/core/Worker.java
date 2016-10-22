@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -33,72 +32,78 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
-import com.coinbot.captcha.Captcha;
-import com.coinbot.captcha.CaptchaDetector;
+import com.coinbot.antibot.AntibotPuzzle;
 import com.coinbot.captcha.CaptchaService;
 import com.coinbot.captcha.CaptchaTimer;
+import com.coinbot.database.AntibotHash;
 import com.coinbot.database.CaptchaHash;
+import com.coinbot.detector.AntibotDetector;
+import com.coinbot.detector.CaptchaDetector;
+import com.coinbot.detector.FaucetDataDetector;
+import com.coinbot.detector.ClaimResultDetector;
+import com.coinbot.detector.InputAddressDetector;
+import com.coinbot.exceptions.DetectionException;
 import com.coinbot.exceptions.UnrecognizedCaptcha;
 import com.coinbot.faucet.Claim;
-import com.coinbot.proxy.Proxy;
+import com.coinbot.ui.ClaimPanel;
 import com.coinbot.ui.WorkerPanel;
 
 /**
- * Esta clase hace todo el trabajo de claim
+ * Esta clase hace todo el trabajo para procesar los claims
+ * 
  * @author danjian
  */
 public class Worker implements Runnable {
 	private int workerId = 0;
 	private WorkerPanel workerPanel;
 	private Thread thread;
-	private Proxy proxy;
-	private List<Claim> faucets;
-	
+
 	public Worker(int workerId) {
 		this.workerId = workerId;
 		this.workerPanel = new WorkerPanel(Integer.toString(workerId));
 		thread = new Thread(this);
 	}
-	
+
 	public int getWorkerId() {
 		return workerId;
 	}
-	
+
 	public boolean hasFinished() {
 		return thread.isInterrupted();
 	}
-	
+
 	public void stop() {
 		thread.interrupt();
 	}
-	
+
 	public void start() {
 		thread.start();
 	}
-	
+
 	@Override
 	public void run() {
-		File pathToBinary = new File("/home/jian/Descargas/firefox46/bin/firefox");
-		// Firefox 46 needed
-		FirefoxBinary ffBinary = new FirefoxBinary(pathToBinary);
+		File bin = new File("/home/jian/Descargas/firefox46/bin/firefox");
+		FirefoxBinary ffBinary = new FirefoxBinary(bin);
 		FirefoxProfile profile = new FirefoxProfile();
 		FirefoxDriver driver = new FirefoxDriver(ffBinary, profile);
 		CoinbotApplication.ui.workerQueue.addWorker(workerPanel);
 		
-		while(CoinbotApplication.bot.isRunning()) {
+		while (CoinbotApplication.bot.isRunning()) {
 			// Sacamos un "claim" de la cola
 			Claim claim = CoinbotApplication.bot.getClaimQueue().next();
-			if(claim == null) {
+			ClaimPanel cp = CoinbotApplication.ui.claimQueue.getClaimPanel(claim);
+			if (claim == null) {
 				continue;
 			}
 			
-			claim.getPanel().reset();
-			claim.getPanel().getProgressBar().setMaximum(10);
-			workerPanel.addClaim(claim.getPanel());
-			claim.getPanel().nextStep("Opening URL");
-			
+			cp.reset();
+			cp.getProgressBar().setMaximum(10);
+			workerPanel.addClaim(cp);
+			cp.nextStep("Opening URL");
+
 			try {
-				driver.manage().timeouts().pageLoadTimeout(12, TimeUnit.SECONDS);
+				driver.manage().timeouts()
+						.pageLoadTimeout(12, TimeUnit.SECONDS);
 				driver.navigate().to(new URL(claim.getFaucet().getUrl()));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
@@ -107,120 +112,173 @@ public class Worker implements Runnable {
 				// Busca un elemento, si no lo encuentra que vuelva a cargar
 				e.printStackTrace();
 			}
+
+			// Detectando datos faucet
+			cp.nextStep("Detecting faucet data");
+			FaucetDataDetector fdd = new FaucetDataDetector(driver);
 			
+			try {
+				fdd.detect();
+			} catch (DetectionException e) {
+				cp.finalStep("Faucet data detection failed!");
+				continue;
+			}
+			
+			// Comprueba que la faucet tenga suficiente balance
+			if(fdd.getReward() > fdd.getBalance()) {
+				cp.finalStep("Faucet dry.");
+				continue;
+			}
+			
+						
 			// Detectando captcha
-			claim.getPanel().nextStep("Detecting Captcha");
-			CaptchaDetector captchaDetector = new CaptchaDetector();
+			cp.nextStep("Detecting Captcha");
+			CaptchaDetector captchaDetector = new CaptchaDetector(driver);
 			CaptchaService captcha = null;
-			
+
 			try {
-				captcha = captchaDetector.find(driver, 
-						driver.findElement(By.tagName("body")));
-			} catch(NoSuchElementException ex) {
-				ex.printStackTrace();
-				claim.getPanel().nextStep("Body not found!");
-				continue;
-			} catch(UnrecognizedCaptcha ex) {
-				ex.printStackTrace();
-				claim.getPanel().nextStep("Captcha not recognized.");
-				continue;
-			} catch(Exception ex) {
+				captchaDetector.detect();
+				captcha = captchaDetector.getCaptcha();
+			} catch (UnrecognizedCaptcha e) {
+				cp.finalStep("Captcha not recognized.");
 				continue;
 			}
 			
-			claim.getPanel().nextStep("Trying auto resolving");
-			// Intentamos buscar el hash en la DB 
+			// Intentamos buscar el hash en la DB
+			cp.nextStep("Autoresolving captcha.");
 			CaptchaHash ch = new CaptchaHash(captcha);
-			String answer = CoinbotApplication.captchaDatabase.getAnswer(ch.getHash());
-			
-			// Si no enctramos la respuesta en la bd se la pedimos al usuario
-			if(answer == null) {
-				claim.getPanel().nextStep("Waiting for captcha answer ...");
-				
-				// Encolar captcha
-				CoinbotApplication.bot.getCaptchaQueue().toQueue(captcha);
-				
-				// Esperar la resolucion del captcha
-				CaptchaTimer timer = new CaptchaTimer(captcha, 35);
-				timer.start();
-				
-				// Esperamos a la resolucion
-				while(!timer.isExpired() && !captcha.resolved()) {
-					CoinbotApplication.ui.captchaQueue.getCaptchaPanel(captcha)
-					.setTimer(timer.getSecondsLeft());
+			captcha.setAnswer(CoinbotApplication.captchaDatabase.getAnswer(ch
+					.getHash()));
+
+			// Si el captcha no fue resuelto (answer is null)
+			if(!captcha.resolved()) {
+				// Si answer es null, no fue encontrado, probamos 2captcha
+				if(CoinbotApplication.coinbotProperties.is2CaptchaEnabled()) {
+					cp.nextStep("Trying 2Captcha ...");
 				}
 				
-				if(!captcha.resolved()) {
-					CoinbotApplication.captchaDatabase.addCaptcha(ch);
-					continue;
+				// Si answer es null, no fue encontrado, probamos manualmente
+				if (CoinbotApplication.coinbotProperties.isCaptchaQueueEnabled()) {
+					cp.nextStep("Captcha to Queue ...");
+					
+					// Encolar captcha
+					CoinbotApplication.bot.getCaptchaQueue().toQueue(captcha);
+					
+					// Esperar la resolucion del captcha
+					CaptchaTimer timer = new CaptchaTimer(captcha, 35);
+					timer.start();
+
+					// Esperamos a la resolucion
+					while (!timer.isExpired() && !captcha.resolved()) {
+						CoinbotApplication.ui.captchaQueue.getCaptchaPanel(captcha)
+								.setTimer(timer.getSecondsLeft());
+					}
+					
+					// Desencolar captcha
+					CoinbotApplication.bot.getCaptchaQueue().deQueue(captcha);
+				}
+				
+				
+				// Tanto si fue resuelto como si no, guardamos el captcha
+				CoinbotApplication.captchaDatabase.addCaptcha(new CaptchaHash(
+						captcha));
+				
+				// Y la imagen en un archivo
+				try {
+					ImageIO.write(captcha.getImage(), "png", new File(
+							"coinbot/captchas/" + ch.getHash() + ".png"));
+				} catch (IOException e) {
+					
 				}
 			}
-			
-			// Guardamos el captcha en la DB
-			CoinbotApplication.captchaDatabase.addCaptcha(new CaptchaHash(captcha));
-			
-			// Y la imagen en un archivo
-			try {
-				ImageIO.write(captcha.getImage(), "png", 
-						new File("coinbot/captchas/" + ch.getHash() + ".png"));
-			} catch (IOException e) {
-				e.printStackTrace();
+
+			// Si answer aun es null, pasamos a la siguiente pagina
+			if(!captcha.resolved()) {
+				cp.finalStep("Captcha resolution failed! ...");
+				continue;
 			}
 			
-			// Envia la respuesta al input
+			cp.nextStep("Captcha solved!");
+
+			// Captcha resuelto, enviamos la  respuesta
 			captcha.answerToInput(driver);
 			
-			// Desencolar captcha
-			CoinbotApplication.bot.getCaptchaQueue().deQueue(captcha);
+			cp.nextStep("Detecting antibot...");
+			// Antibot detection
+			AntibotDetector ad = new AntibotDetector(driver);
+			try {
+				ad.detect();
+			} catch (DetectionException e) {
+				cp.nextStep("No antibot detected.");
+			}
+			
+			AntibotPuzzle ap = ad.getAntibot();
+			// La faucet tiene antibot
+			if(ap != null) {
+				AntibotHash aph = new AntibotHash(ap);
+				CoinbotApplication.antibotDatabase.getHash(aph.getPuzzleHash());
+			}
+			
+			
 			
 			// Escribir address
-			claim.getPanel().nextStep("Detecting input address");
-			InputAddressDetector iad = new InputAddressDetector(driver);
-			iad.insertAddress(claim.getBtcAddress());
+			cp.nextStep("Detecting input address");
 			
-			//claim.getPanel().nextStep("Detecting Antibot");
+			try {
+				InputAddressDetector iad = new InputAddressDetector(driver);
+				iad.insertAddress(claim.getBtcAddress());
+			} catch(NoSuchElementException e) {
+				cp.nextStep("Address input not found.");
+				continue;
+			} catch(Exception e) {
+				continue;
+			}
+			
+			// cp.nextStep("Detecting Antibot");
 			// Detectar antibot (puzzle no soportado)
 			// Resolver antibot
-			
-			// submit
-			claim.getPanel().nextStep("Submiting ...");
-			WebElement submit = driver.findElement(By.id("address"));
-			submit.submit();
-			
-			claim.getPanel().nextStep("Checking response");
-			//claim.getPanel().nextStep("Successfull claim!");
-			/*WebElement out = null;
-			
+
+			// Submit
+			cp.nextStep("Submitting ...");
 			try {
-				out = driver.findElement(By.className("alert-success"));
-			} catch (NoSuchElementException e) {
-				
+				WebElement submit = driver.findElement(By.id("address"));
+				submit.submit();
+			} catch(NoSuchElementException e) {
+				e.printStackTrace();
+				cp.nextStep("Submit failed!...");
+				continue;
+			} catch(Exception e) {
+				continue;
+			}
+
+			cp.nextStep("Checking response");
+			
+			ClaimResultDetector fmd = new ClaimResultDetector(driver);
+			// Si claim con exito...
+			if(fmd.claimSuccess()) {
+				cp.nextStep("Successfull claim!");
+				claim.getTimer().done(fdd.getReward(), fdd.getTimer());
+			} else {
+				cp.nextStep("Unsuccessfull claim");
 			}
 			
-			try {
-				out = driver.findElement(By.className("alert-danger"));
-			} catch (NoSuchElementException e) {
-			}
-			*/
-			//claim.getPanel().nextStep("Failed claim!");
-			
-			claim.getPanel().done();
-			workerPanel.removeClaim(claim.getPanel());
-			claim.getTimer().done(2000, 1);
+			workerPanel.removeClaim(cp);
+			cp.done();
 			CoinbotApplication.bot.getClaimQueue().toQueue(claim);
 			
+			
+			// dellll
 			try {
 				Thread.sleep(25000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 		try {
 			driver.close();
 		} catch (Exception e) {
-			
+
 		}
 		CoinbotApplication.ui.workerQueue.removeWorker(workerPanel);
 		System.out.println("Worker " + workerId + " end work!");
