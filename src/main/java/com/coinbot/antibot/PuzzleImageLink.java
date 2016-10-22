@@ -17,29 +17,23 @@
 package com.coinbot.antibot;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
-public abstract class AntibotPuzzle {
-	protected BufferedImage puzzleImage;
-	protected List<AntibotPuzzleLink> links = new ArrayList<AntibotPuzzleLink>();
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class PuzzleImageLink extends AntibotPuzzleLink {
+	private BufferedImage image;
 	
-	public AntibotPuzzle(BufferedImage puzzle, List<AntibotPuzzleLink> links) {
-		this.puzzleImage = puzzle;
-		this.links = links;
+	public PuzzleImageLink(WebElement link) {
+		super(link);
+		String base64 = link.findElement(By.tagName("img")).getAttribute("src");
 	}
 	
-	public void setOrder(int[] order) {
-		for (int i = 0; i < links.size(); i++) {
-			links.get(i).setOrder(order[i]);
-		}
+	public BufferedImage getImage() {
+		return image;
 	}
 	
-	public List<AntibotPuzzleLink> getLinks() {
-		return links;
-	}
-	
-	public BufferedImage getPuzzleImage() {
-		return puzzleImage;
+	public void click() {
+		link.click();
 	}
 }

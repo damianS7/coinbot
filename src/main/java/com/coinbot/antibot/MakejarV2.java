@@ -20,15 +20,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MakejarV2 extends AntibotPuzzle {
-	private List<BufferedImage> links = new ArrayList<BufferedImage>();
-	
-	public MakejarV2(BufferedImage puzzle, List<BufferedImage> links) {
-		super(puzzle);
-		this.links = links;
-	}
-	
-	public List<BufferedImage> getLinks() {
-		return links;
+public class MakejarV2 extends MakejarV1 {
+	public MakejarV2(BufferedImage puzzle, List<AntibotPuzzleLink> links) {
+		super(puzzle, links);
 	}
 }

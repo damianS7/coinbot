@@ -17,18 +17,11 @@
 package com.coinbot.antibot;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MakejarV1 extends AntibotPuzzle {
-	private List<String> links = new ArrayList<String>();
 	
-	public MakejarV1(BufferedImage puzzle, List<String> links) {
-		super(puzzle);
-		this.links = links;
-	}
-	
-	public List<String> getLinks() {
-		return links;
+	public MakejarV1(BufferedImage puzzle, List<AntibotPuzzleLink> links) {
+		super(puzzle, links);
 	}
 }
