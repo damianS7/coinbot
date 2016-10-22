@@ -16,8 +16,6 @@
  */
 package com.coinbot.faucet;
 
-import com.coinbot.proxy.Proxy;
-import com.coinbot.ui.ClaimPanel;
 /**
  * Esta clase se usa para representar un "claim" en la faucet. El claim es el
  * acto de rellenar el captcha y poner tu direccion de btc en la faucet y 
@@ -25,25 +23,15 @@ import com.coinbot.ui.ClaimPanel;
  * @author danjian
  */
 public class Claim {
-	private ClaimPanel panel;
 	private ClaimTimer timer;
 	private String btcAddress;
 	private Faucet faucet;
-	private Proxy proxy;
 	
-	public Claim(Proxy proxy, Faucet faucet, String btcAddress) {
-		this.proxy = proxy;
+	public Claim(Faucet faucet, String btcAddress) {
 		this.faucet = faucet;
 		this.btcAddress = btcAddress;
-		this.panel = new ClaimPanel(proxy.getAddress(), 
-				Integer.toString(proxy.getPort()), 
-				faucet.getName());
-		panel.ready();
+		
 		this.timer = new ClaimTimer(this);
-	}
-	
-	public ClaimPanel getPanel() {
-		return panel;
 	}
 	
 	public String getBtcAddress() {
@@ -52,10 +40,6 @@ public class Claim {
 	
 	public Faucet getFaucet() {
 		return faucet;
-	}
-	
-	public Proxy getProxy() {
-		return proxy;
 	}
 	
 	public ClaimTimer getTimer() {

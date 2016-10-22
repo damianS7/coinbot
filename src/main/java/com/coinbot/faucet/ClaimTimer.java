@@ -16,6 +16,9 @@
  */
 package com.coinbot.faucet;
 
+import com.coinbot.core.CoinbotApplication;
+import com.coinbot.ui.ClaimPanel;
+
 /**
  * Temporizador para controlar los tiempos entre claims
  * @author danjian
@@ -69,10 +72,10 @@ public class ClaimTimer implements Runnable {
 	
 	@Override
 	public void run() {
-	
-		claim.getPanel().getProgressBar().setMaximum(claim.getFaucet().getTimer()*60);
-		claim.getPanel().getProgressBar().setValue(0);
-		claim.getPanel().getProgressBar().setStringPainted(true);
+		ClaimPanel p = CoinbotApplication.ui.claimQueue.getClaimPanel(claim);
+		p.getProgressBar().setMaximum(claim.getFaucet().getTimer()*60);
+		p.getProgressBar().setValue(0);
+		p.getProgressBar().setStringPainted(true);
 		
 		int s = claim.getFaucet().getTimer()*60;
 		
@@ -96,11 +99,11 @@ public class ClaimTimer implements Runnable {
 				e.printStackTrace();
 			}
 			
-			claim.getPanel().getProgressBar().setString(getTimer());
-			claim.getPanel().getProgressBar().setValue(i);
+			p.getProgressBar().setString(getTimer());
+			p.getProgressBar().setValue(i);
 		}
 		
-		claim.getPanel().ready();
+		p.ready();
 		ready = true;
 	}
 	

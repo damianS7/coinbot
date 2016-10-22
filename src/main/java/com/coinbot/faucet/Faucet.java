@@ -16,15 +16,8 @@
  */
 package com.coinbot.faucet;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * Esta clase representa a la faucet y contiene las propiedades de esta
@@ -32,7 +25,6 @@ import java.net.URLConnection;
  */
 public class Faucet {
 	private String url;
-	private String html = "";
 	private int reward;
 	private int timer;
 	private int referral;
@@ -46,55 +38,6 @@ public class Faucet {
 	
 	public Faucet(String url) {
 		this(url, 30, 1, 10);
-	}
-	
-	public boolean isWorking() {
-		int code = 404;
-		
-		try {
-			URL u = new URL (url);
-			HttpURLConnection huc = ( HttpURLConnection )  u.openConnection ();
-			huc.setRequestMethod ("GET");
-			huc.connect () ; 
-			code = huc.getResponseCode();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		
-		if(code == 404) {
-			return false; 
-		}
-		
-		return true;
-	}
-	
-	public String getHtml() {
-		if(!html.isEmpty()) {
-			return html;
-		}
-		URL u;
-        try {
-
-            u = new URL(url);
-            URLConnection conn = u.openConnection();
-
-            // open the stream and put it into BufferedReader
-            BufferedReader br = new BufferedReader(
-                               new InputStreamReader(conn.getInputStream()));
-
-            String inputLine;
-            while ((inputLine = br.readLine()) != null) {
-                    html += inputLine;
-            }
-            br.close();
-
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return html;
 	}
 	
 	public String getName() {
