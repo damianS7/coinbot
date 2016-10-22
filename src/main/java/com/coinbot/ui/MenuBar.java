@@ -92,6 +92,15 @@ public class MenuBar {
 		});
 		menuEdit.add(editFaucets);
 		
+		JMenuItem editStats = new JMenuItem("Stats");
+		editStats.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Stats();
+			}
+		});
+		menuEdit.add(editStats);
+		
 		JMenu menuHelp = new JMenu("Help");
 		menu.add(menuHelp);
 		JMenuItem helpAbout = new JMenuItem("About");

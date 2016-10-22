@@ -17,14 +17,20 @@
 package com.coinbot.ui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
+import com.coinbot.faucet.Claim;
+
 public class ClaimQueuePanel extends JPanel {
+	private static final long serialVersionUID = 6383417013245947991L;
 	private JPanel queuePanel;
+	private List<ClaimPanel> panels = new ArrayList<ClaimPanel>();
 
 	public ClaimQueuePanel() {
 		setBorder(new TitledBorder(null, "Faucet queue", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -38,13 +44,34 @@ public class ClaimQueuePanel extends JPanel {
 		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
 	}
 	
-	public void addClaim(ClaimPanel panel) {
-		queuePanel.add(panel);
+	public ClaimPanel getClaimPanel(Claim claim) {
+		for (ClaimPanel panel : panels) {
+			if(panel.getClaim() == claim) {
+				return panel;
+			}
+		}
+		return null;
+	}
+	
+	public void addClaim(Claim claim) {
+		ClaimPanel c = getClaimPanel(claim); 
+		if(c!=null) {
+			return;
+		}
+		c = new ClaimPanel(claim);
+		panels.add(c);
+		queuePanel.add(c);
 		queuePanel.revalidate();
 	}
 	
-	public void removeClaim(ClaimPanel panel) {
-		queuePanel.remove(panel);
+	public void removeClaim(Claim claim) {
+		ClaimPanel c = getClaimPanel(claim); 
+		if(c!=null) {
+			return;
+		}
+		
+		panels.remove(c);
+		queuePanel.remove(c);
 		queuePanel.revalidate();
 		queuePanel.repaint();
 	}

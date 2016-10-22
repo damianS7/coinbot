@@ -16,7 +16,6 @@
  */
 package com.coinbot.ui;
 
-import java.awt.image.BufferedImage;
 
 public class AntibotPanel /*extends CaptchaPanel*/ {
 

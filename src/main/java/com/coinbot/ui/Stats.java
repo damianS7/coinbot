@@ -19,40 +19,55 @@ package com.coinbot.ui;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 
 import com.coinbot.core.CoinbotApplication;
 
-public class Addresses extends JDialog {
-	private static final long serialVersionUID = 7259785159850164861L;
-	private JTextArea input;
-	
-	public Addresses() {
-		super(CoinbotApplication.ui.frame, "Bitcoin Addresses");
+public class Stats extends JDialog {
+	private static final long serialVersionUID = -975309551293483252L;
+
+	public Stats() {
+		super(CoinbotApplication.ui.frame, "Stats");
 		setModal(true);
-		getContentPane().setLayout(new MigLayout("", "[300px:n,grow]", "[200px:n,grow][-17.00,grow][35px]"));
-		
-		JScrollPane scrollPane = new JScrollPane();
-		getContentPane().add(scrollPane, "cell 0 0,grow");
-		
-		input = new JTextArea(CoinbotApplication.addressDatabase.toString());
-		scrollPane.setViewportView(input);
-		
+		getContentPane().setLayout(
+				new MigLayout("", "[300px:n,grow]", "[100px:n][35px]"));
+
+		JPanel panel_1 = new JPanel();
+		getContentPane().add(panel_1, "cell 0 0,grow");
+		panel_1.setLayout(new MigLayout("", "[grow][grow]", "[][][]"));
+
+		JLabel lblCollected = new JLabel("Collected");
+		panel_1.add(lblCollected, "cell 0 0");
+
+		JLabel collected = new JLabel(
+				CoinbotApplication.stats.getCollectedString());
+		panel_1.add(collected, "cell 1 0,alignx right");
+
+		JLabel lblClaims = new JLabel("Success claims");
+		panel_1.add(lblClaims, "cell 0 1");
+
+		JLabel successClaims = new JLabel(
+				Integer.toString(CoinbotApplication.stats.countSuccessClaims()));
+		panel_1.add(successClaims, "cell 1 1,alignx right");
+
+		JLabel lblFailedClaims = new JLabel("Failed claims");
+		panel_1.add(lblFailedClaims, "cell 0 2");
+
+		JLabel failedClaims = new JLabel(
+				Integer.toString(CoinbotApplication.stats.countFailedClaims()));
+		panel_1.add(failedClaims, "cell 1 2,alignx right");
+
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
-		getContentPane().add(panel, "cell 0 2,alignx right,aligny top");
-		
+		getContentPane().add(panel, "cell 0 1,grow");
+
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
@@ -61,34 +76,9 @@ public class Addresses extends JDialog {
 			}
 		});
 		panel.add(btnCancel);
-		
-		JButton btnSave = new JButton("Save");
-		btnSave.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				save();
-			}
-		});
-		btnSave.setHorizontalAlignment(SwingConstants.RIGHT);
-		panel.add(btnSave);
-		
+
 		pack();
 		setLocationRelativeTo(CoinbotApplication.ui.frame);
 		setVisible(true);
-	}
-	
-	public void save() {
-		//CoinbotApplication.addressDatabase;
-		
-		String[] addresses = input.getText().split("\n");
-		List<String> addressesList = new ArrayList<String>();
-		
-		for (String address : addresses) {
-			addressesList.add(address);
-		}
-		
-		CoinbotApplication.addressDatabase.setAddresses(addressesList);
-		CoinbotApplication.addressDatabase.save();
-		dispose();
 	}
 }

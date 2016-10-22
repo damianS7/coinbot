@@ -24,20 +24,30 @@ import javax.swing.JProgressBar;
 
 import net.miginfocom.swing.MigLayout;
 
+import com.coinbot.faucet.Claim;
+
 public class ClaimPanel extends JPanel {
+	private static final long serialVersionUID = -6177183141961049655L;
+	private Claim claim;
 	private JProgressBar progressBar;
 	private JLabel lblName;
 
-	public ClaimPanel(String faucet) {
+	public ClaimPanel(Claim c) {
+		this.claim = c;
         setMaximumSize(new Dimension((int) getMaximumSize().getWidth(), 35));
 		setLayout(new MigLayout("", "[150px:120px:150px,left][grow,left][200px:200px:200px,center]", "[20px]"));
 		
-		lblName = new JLabel(faucet);
+		lblName = new JLabel(c.getFaucet().getName());
 		add(lblName, "cell 0 0,growx");
 		
 		progressBar = new JProgressBar();
 		add(progressBar, "cell 2 0,growx,aligny top");
 		progressBar.setStringPainted(true);
+		ready();
+	}
+	
+	public Claim getClaim() {
+		return claim;
 	}
 	
 	public void nextStep(String step) {

@@ -22,7 +22,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
-import javax.swing.ScrollPaneConstants;
 
 public class WorkerQueuePanel extends JPanel {
 	private JPanel queuePanel;
