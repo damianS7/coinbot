@@ -16,19 +16,61 @@
  */
 package com.coinbot.core;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
+
+import com.coinbot.ui.UI;
 
 /**
- * Esta clase es el lanzador de la aplicacion 
+ * Esta clase es el lanzador de la aplicacion, aqui comprobamos que la app
+ * tiene lo minimo necesario para ejecutarse. Permisos, ficheros basicos, 
+ * directorios etc ... Tambien inicializa objetos y carga configuraciones de
+ * archivos.
  * @author danjian
  */
 public class CoinbotApplication {
+	private static Logger logger;
 	public final static String APP_PATH = "coinbot/";
+	public final static String LOG_PATH = APP_PATH + "logs/";
 	public static CoinbotProperties config;
-	
-	public static void main(String[] args) throws IOException {
+	public static UI ui;
+
+	public static void main(String[] args) throws Exception {
+		// Ruta de la aplicacion
+		File pwd = new File(APP_PATH);
+		
+		/*
+		 * La app necesita permisos de escritura, a continuacion hemos de
+		 * asegurarnos que podemos crear/modificar los ficheros antes de
+		 * continuar 
+		 */
+		if (!pwd.canWrite()) {
+			// ops! no se puede escribir :(
+			throw new Exception("La app necesita poder escribir!");
+		}
+
+		// La app puede escribir :)
+		
+		/*
+		 * La app guarda los logs en el directorio LOG_PATH, vamos a asignar
+		 * un fichero.log para cada clase.
+		 */
+		logger = new CoinbotLogger(CoinbotApplication.class).getLogger();
+
+		// Carga de ficheros
 		File config = new File(APP_PATH + "coinbot.properties");
 		config = new CoinbotProperties();
+		
+		logger.info("Configuracion cargada.");
+		
+		
+		// Todo funciona, lanzando UI!
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				ui = new UI();
+			}
+		});
 	}
 }
