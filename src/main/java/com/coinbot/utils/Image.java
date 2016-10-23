@@ -26,8 +26,33 @@ import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import com.coinbot.captcha.SolveMedia;
+
 
 public class Image {
+	
+	public static BufferedImage capture(WebDriver driver, WebElement e) {
+		byte[] screen = ((TakesScreenshot) driver)
+				.getScreenshotAs(OutputType.BYTES);
+		BufferedImage imageScreen = null;
+		try {
+			imageScreen = ImageIO.read(new ByteArrayInputStream(screen));
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		Point capLocation = e.getLocation();
+		Dimension capDimension = e.getSize();
+		return imageScreen.getSubimage(capLocation.x,
+				capLocation.y, capDimension.width, capDimension.height);
+	}
 	
 	public static BufferedImage base64ToImage(String base64) {
 		

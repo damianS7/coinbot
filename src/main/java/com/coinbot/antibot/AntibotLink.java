@@ -26,8 +26,9 @@ public class AntibotLink implements Serializable {
 	private BufferedImage image;
 	private WebElement link;
 	
-	public AntibotLink(WebElement link) {
+	public AntibotLink(WebElement link, BufferedImage image) {
 		this.link = link;
+		this.image = image;
 	}
 	
 	public WebElement getLink() {
