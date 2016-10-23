@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import com.coinbot.database.AddressDatabase;
+import com.coinbot.database.CaptchaDatabase;
 import com.coinbot.database.CoinbotProperties;
 import com.coinbot.ui.UI;
 
@@ -38,6 +39,7 @@ public class CoinbotApplication {
 	public final static String LOG_PATH = APP_PATH + "logs/";
 	public static CoinbotProperties config;
 	public static AddressDatabase addressDatabase;
+	public static CaptchaDatabase captchaDatabase;
 	public static UI ui;
 
 	public static void main(String[] args) throws Exception {
@@ -71,6 +73,11 @@ public class CoinbotApplication {
 		File fileAddress = new File(APP_PATH + "address.txt");
 		addressDatabase = new AddressDatabase(fileAddress);
 		logger.info("Cargadas: " + addressDatabase.load() + " direcciones.");
+		
+		// Captchas resueltos
+		File fileCaptcha = new File(APP_PATH + "captchas.txt");
+		captchaDatabase = new CaptchaDatabase(fileCaptcha);
+		logger.info("Cargados: " + captchaDatabase.load() + " captchas.");
 		
 		// Todo funciona, lanzando UI!
 		EventQueue.invokeLater(new Runnable() {

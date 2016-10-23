@@ -16,6 +16,54 @@
  */
 package com.coinbot.ui;
 
-public class UI {
+import java.awt.BorderLayout;
 
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
+
+public class UI {
+	public JFrame frame;
+	public ResolverQueuePanel resolverQueue;
+	public WorkerQueuePanel workerQueue;
+	public FaucetQueuePanel faucetQueue;
+	public BalancePanel stats;
+	
+	public UI() {
+		setLookAndFeel();
+		frame = new JFrame();
+		resolverQueue = new ResolverQueuePanel();
+		workerQueue = new WorkerQueuePanel();
+		faucetQueue = new FaucetQueuePanel();
+		frame.getContentPane().setLayout(new MigLayout("", "[160px]", "[573px,grow][85.00,grow]"));
+		stats = new BalancePanel();
+		frame.getContentPane().add(stats, "cell 0 0,alignx left,growy");
+		initComponents();
+	}
+	
+	private void initComponents() {
+		frame.setSize(900, 600);
+		frame.setTitle("Coinbot - Bitcoin faucet bot");
+		//frame.setJMenuBar(bar.getBar());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.setAlwaysOnTop(true);
+		frame.setVisible(true);
+	}
+	
+	private void setLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+        	e.printStackTrace();
+        } catch (IllegalAccessException e) {
+        	e.printStackTrace();
+        }
+    }
 }

@@ -17,18 +17,43 @@
 package com.coinbot.database;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import com.coinbot.captcha.Captcha;
 
-public class CaptchaDatabase extends Properties {
-	private File file;
+public class CaptchaDatabase {
 	private List<Captcha> captchas = new ArrayList<Captcha>();
+	private Properties properties;
+	private File file;
 	
 	public CaptchaDatabase(File file) {
 		this.file = file;
+		properties = new Properties();
+	}
+	
+	public int load () throws FileNotFoundException, IOException {
+		properties.load(new FileInputStream(file));
+		
+		for (Object key : properties.keySet()) {
+			String k = (String) key;
+			captchas.add(new Captcha(k, properties.getProperty(k)));
+		}
+		
+		return captchas.size();
+	}
+	
+	public void save() throws FileNotFoundException, IOException {
+		properties.clear();
+		for (Captcha captcha : captchas) {
+			properties.put(captcha.getHash(), captcha.getAnswer());
+		}
+		properties.store(new FileOutputStream(file), "Captcha hash database");
 	}
 	
 	public void addCaptcha(Captcha captcha) {
@@ -51,4 +76,6 @@ public class CaptchaDatabase extends Properties {
 		}
 		return null;
 	}
+	
+	
 }
