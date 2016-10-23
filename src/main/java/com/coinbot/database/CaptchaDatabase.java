@@ -14,14 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.captcha;
+package com.coinbot.database;
 
-import java.awt.image.BufferedImage;
-
-public class SolveMedia extends Captcha {
-
-	public SolveMedia(BufferedImage captcha) {
-		super(captcha);
-	}
-
+public class CaptchaDatabase {
+	
 }

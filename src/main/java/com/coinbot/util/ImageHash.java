@@ -17,5 +17,5 @@
 package com.coinbot.util;
 
 public class ImageHash {
-
+	
 }
