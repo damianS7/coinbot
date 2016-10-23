@@ -16,11 +16,17 @@
  */
 package com.coinbot.detector;
 
+import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -32,7 +38,10 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import com.coinbot.antibot.Antibot;
+import com.coinbot.antibot.Makejar;
+import com.coinbot.antibot.MakejarV1Link;
 import com.coinbot.exceptions.DetectionException;
+import com.coinbot.utils.Image;
 
 public class AntibotDetector implements Detector {
 	private WebDriver driver;
@@ -43,7 +52,6 @@ public class AntibotDetector implements Detector {
 	// src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD8AAAAYCAYAAABN9iVRAAADd0lEQVRYhe3YX4hVVRQG8J/DIG4RGWTowcwHkZCQCokMg+whfCk4SvRSgVBYGUREiEFEhBBZVIiUDyYRFVYQtMOgSARDQiQiTELEQsTCh4ghwiUhQw/7jFyP596ZuX/e+uBwufvsvda31tp7rbXPAj2QqrQE05HjUq95/aKWvxw34FTkmBqFnm5Y0IXUcryMTbiAjZFjehBFqUpP4UbF2JkHpvAv9kaOLwfR0aFrBVbiUuT4qdu864xPVVqH/fVzCN/iochxagAyS/Ez3sEpnMG5yHGlX5ktOpbhaVSYxDTGsSdyvNW2Zrwh4FYcwI7IcbgeO42FA3JbrByf1weU04pUpVX4FIexDSfrV/twU7d1443/u/B85DjSMTaJPwbktxgjyRs17sTOBm+pSpN4o9uipvFbOs92vZUWRY6LA5JbpJzrkSByfNIcS1V6Ab9FjuPd1l1jfEtS24RjQ+C30AiNbyJV6RWsw4O95o3NImcLvhkCnzElAV1FqtIdqUobhiD7GqQq7ca92GEW+5rbvlPIKqxRksigmMaVWu5aJeuPYzJV6cCwEmGq0h5sxmV8gCWpSt8p+eDv5vxentmGL4ZUjq5grK4mH2N/5LgbO82yNeeKVKW3FcOPKaV5PdZjCd5vW9NqfJ3oNndb1AcuY0Ipozsjx0f1+A9YNiQd+3B/5HgkcpyEyPEPnsPtteOvQbdt/wSORY5zQyI2pURgV+T4umN8pcHLKIgcZ7qM/5mqdFGLk6+LfB31rdg7DFIzBLC7pSTdh++HpacNqUqLlLvD6ea7tsg/ixMzW2dYiBzvNkgtU877UM58DzyG4229SrO9XYmHlRI3MqQqjWEPDkaOsyPUswGPK/3+dWhG/iUcmrnE1LejNbgZZ/EjNkeO9wYgtFQx/HLkeK1fOXPQ84ByM30yclxom7OgY/I9+BBHlH5+teKcs8p5OYqLOIjb2urmLGQWK7tqOz6PHK+2zJk0uHMnlCDegu29knZn5O9Sks+v+Aq/4HSj11+hJMkJzNn4mtBRnMDWHtfj1XgxVemzPpy7EI8q2/ygcjPt+Q3iqvFz7LIm6t+/5kMsckylKm2cw5eaC/pwbo038btS6+f0Rahre9sFa3G+bh7mhTkS6su5tfxn5rtmtotNE+cNsf63oG/n9oN5RT5yjLQhMXrn/o//gf8APCdCdg+4ftcAAAAASUVORK5CYII="
 	// alt="" width="63" height="24"> <a href="#" id="antibotlinks_reset"
 	// style="display: none;">( reset )</a></p>
-	
 	public AntibotDetector(WebDriver driver) {
 		this.driver = driver;
 	}
@@ -60,16 +68,30 @@ public class AntibotDetector implements Detector {
 			for (WebElement alert : alerts) {
 				if(alert.getText().toLowerCase().contains("anti-bot")) {
 					String src = alert.findElement(By.tagName("img")).getAttribute("src");
-					System.out.println(src);
+					String[] s = src.split(",");
+					String base64 = s[s.length-1];
+					antibot = new Makejar(Image.base64ToImage(base64));
+				}
+			}
+			
+			List<WebElement> links = driver.findElements(By.tagName("a"));
+			
+			for (WebElement l : links) {
+				if(l.getAttribute("rel") != null 
+						&& l.getAttribute("href").equals("/") ) {
+					
+					try {
+						WebElement img = l.findElement(By.tagName("img"));
+						antibot.addLink(new MakejarV2Link(img));
+					} catch (NoSuchElementException e) {
+						antibot.addLink(new MakejarV1Link(l)); 
+					}
 				}
 			}
 			
 		} catch (NoSuchElementException e) {
 			throw new DetectionException("Antibot protection not found.");
 		}
-		
-		
-		
 	}
 	
 	public static void main(String[] args) {
@@ -97,8 +119,12 @@ public class AntibotDetector implements Detector {
 		}
 		
 		Antibot a = ad.getAntibot();
-		
-		System.out.println(a);
+		JLabel label = new JLabel(new ImageIcon(a.getImage()));
+		JFrame f = new JFrame();
+		f.add(label, BorderLayout.CENTER);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setSize(900, 600);
+		f.setVisible(true);
 	}
 
 	

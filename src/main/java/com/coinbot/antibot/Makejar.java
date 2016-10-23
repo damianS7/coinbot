@@ -18,9 +18,10 @@ package com.coinbot.antibot;
 
 import java.awt.image.BufferedImage;
 
-public class MakejarV2 extends MakejarV1 {
+public class Makejar extends Antibot {
+	private static final long serialVersionUID = 877563609396274074L;
 
-	public MakejarV2(BufferedImage image) {
+	public Makejar(BufferedImage image) {
 		super(image);
 	}
 }

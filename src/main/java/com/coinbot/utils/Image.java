@@ -17,14 +17,36 @@
 package com.coinbot.utils;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
-public class ImageHash {
+
+public class Image {
+	
+	public static BufferedImage base64ToImage(String base64) {
+		
+		byte[] image = Base64.getDecoder().decode(base64);
+		
+		ByteArrayInputStream bais = new ByteArrayInputStream(image);
+
+		BufferedImage i = null;
+		
+		try {
+			i = ImageIO.read(bais);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return i;
+	}
+	
 	public static String imageToHash(BufferedImage image) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
