@@ -16,11 +16,14 @@
  */
 package com.coinbot.antibot;
 
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 
 import org.openqa.selenium.WebElement;
 
-public abstract class AntibotLink implements Serializable {
+public class AntibotLink implements Serializable {
+	private static final long serialVersionUID = -397609000743438762L;
+	private BufferedImage image;
 	private WebElement link;
 	
 	public AntibotLink(WebElement link) {
@@ -29,5 +32,9 @@ public abstract class AntibotLink implements Serializable {
 	
 	public WebElement getLink() {
 		return link;
+	}
+	
+	public BufferedImage getImage() {
+		return image;
 	}
 }

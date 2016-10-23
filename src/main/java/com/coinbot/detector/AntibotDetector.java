@@ -27,7 +27,9 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
+import org.hamcrest.core.IsNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -38,63 +40,86 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import com.coinbot.antibot.Antibot;
+import com.coinbot.antibot.AntibotLink;
 import com.coinbot.antibot.Makejar;
 import com.coinbot.antibot.MakejarV1Link;
+import com.coinbot.antibot.MakejarV2Link;
 import com.coinbot.exceptions.DetectionException;
 import com.coinbot.utils.Image;
 
 public class AntibotDetector implements Detector {
 	private WebDriver driver;
 	private Antibot antibot;
-	
+	private boolean hasAntibot = false;
+
 	// <p class="alert alert-info">Please click on the Anti-Bot links in the
 	// following order <img
-	// src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD8AAAAYCAYAAABN9iVRAAADd0lEQVRYhe3YX4hVVRQG8J/DIG4RGWTowcwHkZCQCokMg+whfCk4SvRSgVBYGUREiEFEhBBZVIiUDyYRFVYQtMOgSARDQiQiTELEQsTCh4ghwiUhQw/7jFyP596ZuX/e+uBwufvsvda31tp7rbXPAj2QqrQE05HjUq95/aKWvxw34FTkmBqFnm5Y0IXUcryMTbiAjZFjehBFqUpP4UbF2JkHpvAv9kaOLwfR0aFrBVbiUuT4qdu864xPVVqH/fVzCN/iochxagAyS/Ez3sEpnMG5yHGlX5ktOpbhaVSYxDTGsSdyvNW2Zrwh4FYcwI7IcbgeO42FA3JbrByf1weU04pUpVX4FIexDSfrV/twU7d1443/u/B85DjSMTaJPwbktxgjyRs17sTOBm+pSpN4o9uipvFbOs92vZUWRY6LA5JbpJzrkSByfNIcS1V6Ab9FjuPd1l1jfEtS24RjQ+C30AiNbyJV6RWsw4O95o3NImcLvhkCnzElAV1FqtIdqUobhiD7GqQq7ca92GEW+5rbvlPIKqxRksigmMaVWu5aJeuPYzJV6cCwEmGq0h5sxmV8gCWpSt8p+eDv5vxentmGL4ZUjq5grK4mH2N/5LgbO82yNeeKVKW3FcOPKaV5PdZjCd5vW9NqfJ3oNndb1AcuY0Ipozsjx0f1+A9YNiQd+3B/5HgkcpyEyPEPnsPtteOvQbdt/wSORY5zQyI2pURgV+T4umN8pcHLKIgcZ7qM/5mqdFGLk6+LfB31rdg7DFIzBLC7pSTdh++HpacNqUqLlLvD6ea7tsg/ixMzW2dYiBzvNkgtU877UM58DzyG4229SrO9XYmHlRI3MqQqjWEPDkaOsyPUswGPK/3+dWhG/iUcmrnE1LejNbgZZ/EjNkeO9wYgtFQx/HLkeK1fOXPQ84ByM30yclxom7OgY/I9+BBHlH5+teKcs8p5OYqLOIjb2urmLGQWK7tqOz6PHK+2zJk0uHMnlCDegu29knZn5O9Sks+v+Aq/4HSj11+hJMkJzNn4mtBRnMDWHtfj1XgxVemzPpy7EI8q2/ygcjPt+Q3iqvFz7LIm6t+/5kMsckylKm2cw5eaC/pwbo038btS6+f0Rahre9sFa3G+bh7mhTkS6su5tfxn5rtmtotNE+cNsf63oG/n9oN5RT5yjLQhMXrn/o//gf8APCdCdg+4ftcAAAAASUVORK5CYII="
 	// alt="" width="63" height="24"> <a href="#" id="antibotlinks_reset"
 	// style="display: none;">( reset )</a></p>
 	public AntibotDetector(WebDriver driver) {
 		this.driver = driver;
 	}
-	
+
 	public Antibot getAntibot() {
 		return antibot;
 	}
 	
+	public boolean hasAntibot() {
+		return hasAntibot;
+	}
+
 	@Override
 	public void detect() throws DetectionException {
 		try {
-			List<WebElement> alerts = driver.findElements(By.className("alert-info"));
-			
+			driver.findElement(By.className("antibotlinks"));
+			hasAntibot = true;
+		} catch (NoSuchElementException e) {
+			return;
+		}
+		
+		try {
+			List<WebElement> alerts = driver.findElements(By
+					.className("alert-info"));
+
+			// Buscando el puzzle principal
 			for (WebElement alert : alerts) {
-				if(alert.getText().toLowerCase().contains("anti-bot")) {
-					String src = alert.findElement(By.tagName("img")).getAttribute("src");
-					String[] s = src.split(",");
-					String base64 = s[s.length-1];
-					antibot = new Makejar(Image.base64ToImage(base64));
+				if (alert.getText().toLowerCase().contains("anti-bot")) {
+					WebElement img = alert.findElement(By.tagName("img"));
+					
+					antibot = new MakejarAntibot();
 				}
 			}
-			
+
 			List<WebElement> links = driver.findElements(By.tagName("a"));
 			
+			// Buscando los enlaces
 			for (WebElement l : links) {
-				if(l.getAttribute("rel") != null 
-						&& l.getAttribute("href").equals("/") ) {
-					
+				if (l.getAttribute("rel") != null) {
 					try {
+						// V2
 						WebElement img = l.findElement(By.tagName("img"));
-						antibot.addLink(new MakejarV2Link(img));
-					} catch (NoSuchElementException e) {
-						antibot.addLink(new MakejarV1Link(l)); 
+						String src = img.getAttribute("src");
+						String[] s = src.split(",");
+						String base64 = s[s.length - 1];
+						
+						antibot.addLink(new MakejarV2Link(img, Image
+								.base64ToImage(base64)));
+					} catch (Exception e) {
+						// V1
+						if(l.getAttribute("class").equals("antibotlinks")) {
+							antibot.addLink(new MakejarV1Link(l));
+							continue;
+						}
 					}
 				}
 			}
-			
 		} catch (NoSuchElementException e) {
-			throw new DetectionException("Antibot protection not found.");
+			throw new DetectionException("Failed detecting antibot.");
 		}
 	}
-	
+
 	public static void main(String[] args) {
+		/*
 		File pathToBinary = new File(
 				"/home/jian/Descargas/firefox46/bin/firefox");
 		// Firefox 46 needed
@@ -104,28 +129,54 @@ public class AntibotDetector implements Detector {
 
 		try {
 			driver.manage().timeouts().pageLoadTimeout(12, TimeUnit.SECONDS);
-			driver.navigate().to(new URL("http://bitcoin-gator.com"));
+			//driver.navigate().to(new URL("http://bitcoin-gator.com"));
+			driver.navigate().to(new URL("http://bitcoins-loot.site"));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (TimeoutException e) {
 			e.printStackTrace();
 		}
-		
+
 		AntibotDetector ad = new AntibotDetector(driver);
 		try {
 			ad.detect();
 		} catch (DetectionException e) {
 			e.printStackTrace();
 		}
-		
 		Antibot a = ad.getAntibot();
-		JLabel label = new JLabel(new ImageIcon(a.getImage()));
+*/
+		
+		String b = "iVBORw0KGgoAAAANSUhEUgAAAJYAAAAQCAIAAAB7ihFwAAAABnRSTlMAAA"
+				+ "AAAABupgeRAAAA3UlEQVRYhe2X2w6EIAxEW8P//zL7gGm6IDAU48rS8yIS6"
+				+ "jgtl0DkOI7jOHvD54NZumKMUCQzPjiLAoVsEqNCBu+v4iCVqWRAW2Jm/ar7"
+				+ "DWINobskukKZo6FfeieHIeYBn8w8syCkJDsQqLJ7XE5V3TYUsiskw+YLUG"
+				+ "6PjcW3NEFa4rDhauZwGhKaRz6edk7wOFyxomcJy9pka07HtE9HJFmlEI453"
+				+ "TVHt8zLHxJoxEPpfIjHkoULrV4/SpeKy9OoH/ltHskFLtQYCSYdvCrYvP8h"
+				+ "tbvHukKO4zjOPnwAkMalKVsXMY4AAAAASUVORK5CYII=";
+		String b2 = "iVBORw0KGgoAAAANSUhEUgAAAJYAAAAQCAIAAAB7ihFwAAAABnRSTlMAA"
+				+ "AAAAABupgeRAAAAiklEQVRYhe3W0QqAIAwF0E37/19eD6JEGUw024V7Xqqh6"
+				+ "QUZihARERER/U1VVfX23i1C8yfCyn4MjX6GMbPJ6f7i5EKTI8NKUjfdjlv57"
+				+ "Bah+RNhZc/l0e0VQw1EqzX7+mYh/6zgzfMqSd2umbXT91aE5k+ElT2t/d22n"
+				+ "hO8ueHZdm2Lfz8kIiI4J9gZSGK4DjdcAAAAAElFTkSuQmCC";
+		JLabel label = new JLabel(new ImageIcon(Image.base64ToImage(b2)));
 		JFrame f = new JFrame();
-		f.add(label, BorderLayout.CENTER);
+		JPanel p = new JPanel();
+		f.add(p, BorderLayout.CENTER);
+		p.add(label);
+		/*
+		for (AntibotLink l : a.getLinks()) {
+			if(l instanceof MakejarV2Link) {
+				MakejarV2Link ml = (MakejarV2Link) l;
+				p.add(new JLabel(new ImageIcon(ml.getImage())));
+			} else {
+				MakejarV1Link ml = (MakejarV1Link) l;
+				p.add(new JLabel(ml.getContent()));
+			}
+		}*/
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setSize(900, 600);
 		f.setVisible(true);
+		
 	}
 
-	
 }

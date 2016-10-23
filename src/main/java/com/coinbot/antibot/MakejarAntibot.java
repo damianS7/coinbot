@@ -16,17 +16,14 @@
  */
 package com.coinbot.antibot;
 
-import org.openqa.selenium.WebElement;
+import java.awt.image.BufferedImage;
 
-public class MakejarV1Link extends AntibotLink {
-	
-	public MakejarV1Link(WebElement link) {
-		super(link);
+public class MakejarAntibot extends Antibot {
+
+	private static final long serialVersionUID = 4806008817310487555L;
+
+	public MakejarAntibot(BufferedImage image) {
+		super(image);
 	}
 
-	private String content;
-	
-	public String getContent() {
-		return content;
-	}
 }

@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Antibot implements Serializable {
+public class Antibot implements Serializable {
 	private static final long serialVersionUID = 7468098572515422144L;
 	private List<AntibotLink> links = new ArrayList<AntibotLink>();
 	private BufferedImage image;
