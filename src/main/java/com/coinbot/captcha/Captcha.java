@@ -18,7 +18,7 @@ package com.coinbot.captcha;
 
 import java.awt.image.BufferedImage;
 
-import com.coinbot.util.ImageHash;
+import com.coinbot.utils.ImageHash;
 
 public abstract class Captcha {
 	protected BufferedImage captcha;
