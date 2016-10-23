@@ -14,8 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.core;
+package com.coinbot.database;
 
-public class CoinbotProperties {
+import java.io.File;
+import java.util.List;
 
+/**
+ * Esta clase lee/guarda las direcciones de BTC de un archivo.
+ * @author danjian
+ */
+public class AddressDatabase extends FileDatabase {
+
+	public AddressDatabase(File file) {
+		super(file);
+	}
+	
+	public List<String> getAddresses() {
+		return getLines();
+	}
+	
+	public void addAddress(String address) {
+		addLine(address);
+	}
+	
+	public void overwrite(List<String> address) {
+		setLines(address);
+	}
 }

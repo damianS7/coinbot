@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import com.coinbot.database.AddressDatabase;
+import com.coinbot.database.CoinbotProperties;
 import com.coinbot.ui.UI;
 
 /**
@@ -35,6 +37,7 @@ public class CoinbotApplication {
 	public final static String APP_PATH = "coinbot/";
 	public final static String LOG_PATH = APP_PATH + "logs/";
 	public static CoinbotProperties config;
+	public static AddressDatabase addressDatabase;
 	public static UI ui;
 
 	public static void main(String[] args) throws Exception {
@@ -59,12 +62,15 @@ public class CoinbotApplication {
 		 */
 		logger = new CoinbotLogger(CoinbotApplication.class).getLogger();
 
-		// Carga de ficheros
-		File config = new File(APP_PATH + "coinbot.properties");
-		config = new CoinbotProperties();
-		
+		// Configuracion de la app
+		File fileConfig = new File(APP_PATH + "coinbot.properties");
+		config = new CoinbotProperties(fileConfig);
 		logger.info("Configuracion cargada.");
 		
+		// Direcciones de BTC
+		File fileAddress = new File(APP_PATH + "address.txt");
+		addressDatabase = new AddressDatabase(fileAddress);
+		logger.info("Cargadas: " + addressDatabase.load() + " direcciones.");
 		
 		// Todo funciona, lanzando UI!
 		EventQueue.invokeLater(new Runnable() {
