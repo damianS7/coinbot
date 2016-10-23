@@ -16,6 +16,44 @@
  */
 package com.coinbot.detector;
 
-public class RotatorDetector {
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.firefox.FirefoxBinary;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+
+import com.coinbot.exceptions.DetectionException;
+
+public class RotatorDetector {
+	public static void main(String[] args) {
+		File bin = new File("/home/jian/Descargas/firefox46/bin/firefox");
+		FirefoxBinary ffBinary = new FirefoxBinary(bin);
+		FirefoxProfile profile = new FirefoxProfile();
+		FirefoxDriver driver = new FirefoxDriver(ffBinary, profile);
+		try {
+			driver.manage().timeouts()
+					.pageLoadTimeout(12, TimeUnit.SECONDS);
+			driver.navigate().to(new URL("http://bitcoin-gator.com"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// Busca un elemento, si no lo encuentra que vuelva a cargar
+			e.printStackTrace();
+		}
+		
+		FaucetDetector fd = new FaucetDetector(driver);
+		try {
+			fd.detect();
+		} catch (DetectionException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(fd.getBalance());
+		System.out.println(fd.getReward());
+		System.out.println(fd.getTimer());
+	}
 }
