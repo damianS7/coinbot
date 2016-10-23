@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.coinbot.antibot.Antibot;
 import com.coinbot.core.CoinbotApplication;
+import com.coinbot.utils.Image;
 
 public class AntibotDatabase {
 	private List<Antibot> antibots = new ArrayList<Antibot>();
@@ -67,7 +68,8 @@ public class AntibotDatabase {
 			try {
 				ObjectOutputStream oos = new ObjectOutputStream(
 						new FileOutputStream(CoinbotApplication.APP_PATH 
-								+ "antibots/" + System.currentTimeMillis() + ".ab"));
+								+ "antibots/" + Image.imageToHash(
+										antibot.getImage()) + ".ab"));
 				oos.writeObject(antibot);
 				oos.flush();
 				oos.close();
