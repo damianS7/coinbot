@@ -16,6 +16,18 @@
  */
 package com.coinbot.antibot;
 
-public class AntibotLink {
+import java.io.Serializable;
 
+import org.openqa.selenium.WebElement;
+
+public abstract class AntibotLink implements Serializable {
+	private WebElement link;
+	
+	public AntibotLink(WebElement link) {
+		this.link = link;
+	}
+	
+	public WebElement getLink() {
+		return link;
+	}
 }

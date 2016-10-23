@@ -16,6 +16,29 @@
  */
 package com.coinbot.antibot;
 
-public class Antibot {
+import java.awt.image.BufferedImage;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+public abstract class Antibot implements Serializable {
+	private static final long serialVersionUID = 7468098572515422144L;
+	private List<AntibotLink> links = new ArrayList<AntibotLink>();
+	private BufferedImage image;
+
+	public Antibot(BufferedImage image) {
+		this.image = image;
+	}
+	
+	public BufferedImage getImage() {
+		return image;
+	}
+	
+	public List<AntibotLink> getLinks() {
+		return links;
+	}
+	
+	public void addLink(AntibotLink al) {
+		links.add(al);
+	}
 }

@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.detector;
+package com.coinbot.exceptions;
 
-public interface Detector {
-	public void detect() throws Exception;
+public class DetectionException extends CoinbotException {
+	public DetectionException(String exceptionMessage) {
+		super(exceptionMessage);
+	}
 }

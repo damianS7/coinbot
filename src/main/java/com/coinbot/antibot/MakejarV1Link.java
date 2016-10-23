@@ -14,8 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.detector;
+package com.coinbot.antibot;
 
-public interface Detector {
-	public void detect() throws Exception;
+import org.openqa.selenium.WebElement;
+
+public class MakejarV1Link extends AntibotLink {
+	
+	public MakejarV1Link(WebElement link) {
+		super(link);
+	}
+
+	private String content;
+	
+	public String getContent() {
+		return content;
+	}
 }
