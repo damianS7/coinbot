@@ -14,19 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.ui;
+package com.coinbot.faucet;
 
-import javax.swing.JPanel;
-
-import com.coinbot.faucet.Faucet;
-
-public class FaucetPanel extends JPanel {
-	private Faucet faucet;
+public class Faucet {
+	private String name;
 	
-	public FaucetPanel(Faucet faucet) {
-	}
-	
-	public Faucet getFaucet() {
-		return faucet;
-	}
 }

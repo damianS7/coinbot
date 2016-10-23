@@ -16,6 +16,59 @@
  */
 package com.coinbot.ui;
 
-public class FaucetQueuePanel {
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.TitledBorder;
+
+import com.coinbot.faucet.Faucet;
+
+
+public class FaucetQueuePanel extends JPanel {
+	private static final long serialVersionUID = 6383417013245947991L;
+	private List<FaucetPanel> panels = new ArrayList<FaucetPanel>();
+	private JPanel queuePanel;
+
+	public FaucetQueuePanel() {
+		setBorder(new TitledBorder(null, "Faucet queue", TitledBorder.LEADING, 
+				TitledBorder.TOP, null, null));
+		setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		add(scrollPane, BorderLayout.CENTER);
+		
+		queuePanel = new JPanel();
+		scrollPane.setViewportView(queuePanel);
+		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
+	}
+	
+	public FaucetPanel getPanel(Faucet faucet) {
+		for (FaucetPanel faucetPanel : panels) {
+			if(faucetPanel.getFaucet() == faucet) {
+				return faucetPanel;
+			}
+		}
+		return null;
+	}
+	
+	public void addFaucet(Faucet faucet) {
+		FaucetPanel fp = new FaucetPanel(faucet);
+		panels.add(fp);
+		queuePanel.add(fp);
+		queuePanel.revalidate();
+	}
+	
+	public void removeFaucet(Faucet faucet) {
+		FaucetPanel fp = getPanel(faucet);
+		if(fp instanceof FaucetPanel) {
+			panels.remove(fp);
+			queuePanel.remove(fp);
+			queuePanel.revalidate();
+			queuePanel.repaint();
+		}
+	}
 }
