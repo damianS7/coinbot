@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.coinbot.antibot.Antibot;
-import com.coinbot.antibot.Makejar;
 import com.coinbot.core.CoinbotApplication;
 
 public class AntibotDatabase {
@@ -76,14 +75,5 @@ public class AntibotDatabase {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	public static void main(String[] args) {
-		AntibotDatabase ad = new AntibotDatabase();
-		Makejar ab = new Makejar(null);
-		System.out.println(ad.load());
-		ad.add(ab);
-		ad.save();
-		
 	}
 }
