@@ -17,5 +17,4 @@
 package com.coinbot.ui;
 
 public class WorkerPanel {
-
 }

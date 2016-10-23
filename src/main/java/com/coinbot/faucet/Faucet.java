@@ -19,4 +19,7 @@ package com.coinbot.faucet;
 public class Faucet {
 	private String name;
 	
+	public String getName() {
+		return name;
+	}
 }
