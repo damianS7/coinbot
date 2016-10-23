@@ -14,44 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.captcha;
+package com.coinbot.detector;
 
-import java.awt.image.BufferedImage;
+import com.coinbot.captcha.CaptchaService;
 
-import com.coinbot.utils.ImageHash;
+public class CaptchaDetector implements Detector {
 
-public class Captcha {
-	protected BufferedImage captcha;
-	protected String hash;
-	protected String answer;
+	private CaptchaService captcha;
 	
-	public Captcha(BufferedImage captcha) {
-		this.captcha = captcha;
-		this.hash = ImageHash.imageToHash(captcha);
-	}
-	
-	public Captcha(String hash) {
-		this(hash, null);
-	}
-	
-	public Captcha(String hash, String answer) {
-		this.hash = hash;
-		this.answer = answer;
-	}
-	
-	public BufferedImage getImage() {
+	public CaptchaService getCaptcha() {
 		return captcha;
 	}
 	
-	public String getHash() {
-		return hash;
+	@Override
+	public void detect() {
 	}
-	
-	public String getAnswer() {
-		return answer;
-	}
-	
-	public void setAnswer(String answer) {
-		this.answer = answer;
-	}
+
 }

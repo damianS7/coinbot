@@ -16,6 +16,39 @@
  */
 package com.coinbot.database;
 
-public class CaptchaDatabase {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import com.coinbot.captcha.Captcha;
+
+public class CaptchaDatabase extends Properties {
+	private File file;
+	private List<Captcha> captchas = new ArrayList<Captcha>();
 	
+	public CaptchaDatabase(File file) {
+		this.file = file;
+	}
+	
+	public void addCaptcha(Captcha captcha) {
+		captchas.add(captcha);
+	}
+	
+	public void removeCaptcha(Captcha captcha) {
+		captchas.remove(captcha);
+	}
+	
+	public List<Captcha> getCaptchas() {
+		return captchas;
+	}
+	
+	public String getAnswer(String captchaHash) {
+		for (Captcha captcha : captchas) {
+			if(captcha.getHash().equals(captchaHash)) {
+				return captcha.getAnswer();
+			}
+		}
+		return null;
+	}
 }

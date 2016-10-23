@@ -18,40 +18,10 @@ package com.coinbot.captcha;
 
 import java.awt.image.BufferedImage;
 
-import com.coinbot.utils.ImageHash;
+public abstract class CaptchaService extends Captcha {
+	public CaptchaService(BufferedImage captcha) {
+		super(captcha);
+	}
 
-public class Captcha {
-	protected BufferedImage captcha;
-	protected String hash;
-	protected String answer;
-	
-	public Captcha(BufferedImage captcha) {
-		this.captcha = captcha;
-		this.hash = ImageHash.imageToHash(captcha);
-	}
-	
-	public Captcha(String hash) {
-		this(hash, null);
-	}
-	
-	public Captcha(String hash, String answer) {
-		this.hash = hash;
-		this.answer = answer;
-	}
-	
-	public BufferedImage getImage() {
-		return captcha;
-	}
-	
-	public String getHash() {
-		return hash;
-	}
-	
-	public String getAnswer() {
-		return answer;
-	}
-	
-	public void setAnswer(String answer) {
-		this.answer = answer;
-	}
+	public abstract void insertAnswer(String answer);
 }

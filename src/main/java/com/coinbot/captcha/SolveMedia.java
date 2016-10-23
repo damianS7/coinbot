@@ -18,10 +18,14 @@ package com.coinbot.captcha;
 
 import java.awt.image.BufferedImage;
 
-public class SolveMedia extends Captcha {
+public class SolveMedia extends CaptchaService {
 
 	public SolveMedia(BufferedImage captcha) {
 		super(captcha);
+	}
+
+	@Override
+	public void insertAnswer(String answer) {
 	}
 
 }
