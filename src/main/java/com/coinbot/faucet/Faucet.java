@@ -16,10 +16,68 @@
  */
 package com.coinbot.faucet;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+/**
+ * Esta clase representa a la faucet y contiene las propiedades de esta
+ * @author danjian
+ */
 public class Faucet {
-	private String name;
+	private String url;
+	private int reward;
+	private int timer;
+	private int referral;
+	
+	public Faucet(String url, int reward, int timer, int referral) {
+		this.url = url;
+		this.timer = timer;
+		this.reward = reward;
+		this.referral = referral;
+	}
+	
+	public Faucet(String url) {
+		this(url, 30, 1, 10);
+	}
 	
 	public String getName() {
-		return name;
+		URI uri;
+		try {
+			uri = new URI(url);
+			String domain = uri.getHost();
+			return domain.startsWith("www.") ? domain.substring(4) : domain;
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public void setReferral(int referral) {
+		this.referral = referral;
+	}
+	
+	public int getReferral() {
+		return referral;
+	}
+	
+	public void setReward(int reward) {
+		this.reward = reward;
+	}
+	
+	public int getReward() {
+		return reward;
+	}
+	
+	public void setTimer(int timer) {
+		this.timer = timer;
+	}
+	
+	public int getTimer() {
+		return timer;
+	}
+	
+	public String getUrl() {
+		return url;
 	}
 }
