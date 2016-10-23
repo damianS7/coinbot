@@ -16,18 +16,76 @@
  */
 package com.coinbot.detector;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
 import com.coinbot.captcha.CaptchaService;
+import com.coinbot.captcha.ReCaptcha;
+import com.coinbot.captcha.SolveMedia;
+import com.coinbot.exceptions.DetectionException;
+import com.coinbot.utils.Image;
 
 public class CaptchaDetector implements Detector {
-
+	private WebDriver driver;
 	private CaptchaService captcha;
-	
+
+	public CaptchaDetector(WebDriver driver) {
+		this.driver = driver;
+	}
+
 	public CaptchaService getCaptcha() {
 		return captcha;
 	}
 	
-	@Override
-	public void detect() {
+	private SolveMedia detectSM() {
+		WebElement body = driver.findElement(By.tagName("body"));
+		WebElement captcha;
+
+		try {
+			captcha = body.findElement(By.id("adcopy-puzzle-image"));
+		} catch (NoSuchElementException e) {
+			return null;
+		}
+
+		WebElement iframe = null;
+		try {
+			iframe = captcha.findElement(By.tagName("iframe"));
+		} catch (NoSuchElementException e) {
+		}
+
+		// Si tiene iframe es la version 2
+		if (iframe != null) {
+			driver.switchTo().frame(iframe);
+			JavascriptExecutor js2 = (JavascriptExecutor) driver;
+			js2.executeScript("document.getElementById('loading').style.display = 'none'");
+			js2.executeScript("document.getElementById('overlay').style.display = 'inline'");
+			driver.switchTo().defaultContent();
+		}
+		
+		return new SolveMedia(Image.capture(driver, captcha));
+	}
+	
+	private ReCaptcha detectRC() {
+		return null;
 	}
 
+	@Override
+	public void detect() throws DetectionException {
+		// SM
+		this.captcha = detectSM();
+		if(this.captcha != null) {
+			return;
+		}
+		
+		// RC
+		this.captcha = detectRC();
+		if(this.captcha != null) {
+			return;
+		}
+
+		throw new DetectionException("Captcha not recognized.");
+	}
 }
