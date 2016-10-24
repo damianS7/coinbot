@@ -16,8 +16,6 @@
  */
 package com.coinbot.faucet;
 
-public class Timer {
-	public static void main(String[] args) {
-		
-	}
+public class Claim {
+
 }
