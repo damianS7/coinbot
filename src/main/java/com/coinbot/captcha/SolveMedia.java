@@ -18,14 +18,23 @@ package com.coinbot.captcha;
 
 import java.awt.image.BufferedImage;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+import com.coinbot.exceptions.InputNotFoundException;
+
 public class SolveMedia extends CaptchaService {
 
-	public SolveMedia(BufferedImage captcha) {
-		super(captcha);
+	public SolveMedia(BufferedImage image) {
+		super(image);
 	}
 
 	@Override
-	public void insertAnswer(String answer) {
+	public void insertAnswer(WebDriver driver, String answer)
+			throws InputNotFoundException {
+		WebElement input = driver.findElement(By.id("adcopy_response"));
+		input.sendKeys(getAnswer());
 	}
 
 }

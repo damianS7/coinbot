@@ -18,10 +18,24 @@ package com.coinbot.captcha;
 
 import java.awt.image.BufferedImage;
 
-public abstract class CaptchaService extends Captcha {
+import org.openqa.selenium.WebDriver;
+
+public abstract class CaptchaService extends Captcha implements Runnable {
+	protected boolean isExpired = false;
+	
 	public CaptchaService(BufferedImage captcha) {
 		super(captcha);
 	}
 
-	public abstract void insertAnswer(String answer);
+	public boolean isExpired() {
+		return isExpired;
+	}
+	
+	public abstract void insertAnswer(WebDriver driver, String answer) 
+			throws Exception;
+	
+	@Override
+	public void run() {
+		
+	}
 }

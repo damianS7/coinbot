@@ -14,21 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.captcha;
+package com.coinbot.exceptions;
 
-import java.awt.image.BufferedImage;
+public class InputNotFoundException extends CoinbotException {
+	private static final long serialVersionUID = -441091034750318003L;
 
-import org.openqa.selenium.WebDriver;
-
-public class ReCaptcha extends CaptchaService {
-
-	public ReCaptcha(BufferedImage captcha) {
-		super(captcha);
+	public InputNotFoundException(String exceptionMessage) {
+		super(exceptionMessage);
 	}
-
-	@Override
-	public void insertAnswer(WebDriver driver, String answer) throws Exception {
-	}
-
 
 }
