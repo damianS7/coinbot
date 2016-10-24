@@ -14,10 +14,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.faucet;
+package com.coinbot.core;
 
-public class Timer {
-	public static void main(String[] args) {
-		
+
+/**
+ * Esta clase hace todo el trabajo para procesar los claims
+ * 
+ * @author danjian
+ */
+public class Worker implements Runnable {
+	private boolean working = false;
+	private int workerId = 0;
+	private Thread thread;
+
+	public Worker(int workerId) {
+		this.workerId = workerId;
+		thread = new Thread(this);
+	}
+
+	public int getWorkerId() {
+		return workerId;
+	}
+
+	public boolean hasFinished() {
+		return working;
+	}
+
+	public void stop() {
+		working = false;
+		thread.interrupt();
+	}
+
+	public void start() {
+		working = true;
+		thread.start();
+	}
+
+	@Override
+	public void run() {
 	}
 }
