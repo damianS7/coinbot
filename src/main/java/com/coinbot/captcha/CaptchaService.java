@@ -32,6 +32,10 @@ public abstract class CaptchaService extends Captcha {
 		return timer.hasFinished();
 	}
 	
+	public CaptchaTimer getTimer() {
+		return timer;
+	}
+	
 	public abstract void insertAnswer(WebDriver driver, String answer) 
 			throws Exception;
 }
