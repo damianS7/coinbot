@@ -21,9 +21,9 @@ import java.awt.image.BufferedImage;
 import org.openqa.selenium.WebDriver;
 
 public class ReCaptcha extends CaptchaService {
-
-	public ReCaptcha(BufferedImage captcha) {
-		super(captcha);
+	
+	public ReCaptcha(BufferedImage captcha, CaptchaTimer timer) {
+		super(captcha, timer);
 	}
 
 	@Override

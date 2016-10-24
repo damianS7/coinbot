@@ -16,22 +16,11 @@
  */
 package com.coinbot.captcha;
 
-import java.awt.image.BufferedImage;
+import com.coinbot.utils.CountdownTimer;
 
-import org.openqa.selenium.WebDriver;
-
-public abstract class CaptchaService extends Captcha {
-	protected CaptchaTimer timer;
+public class CaptchaTimer extends CountdownTimer {
 	
-	public CaptchaService(BufferedImage captcha, CaptchaTimer timer) {
-		super(captcha);
-		timer.start();
+	public CaptchaTimer(int minutes, int seconds) {
+		super(0, minutes, seconds);
 	}
-
-	public boolean isExpired() {
-		return timer.hasFinished();
-	}
-	
-	public abstract void insertAnswer(WebDriver driver, String answer) 
-			throws Exception;
 }

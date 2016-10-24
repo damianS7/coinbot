@@ -26,8 +26,12 @@ import com.coinbot.exceptions.InputNotFoundException;
 
 public class SolveMedia extends CaptchaService {
 
-	public SolveMedia(BufferedImage image) {
-		super(image);
+	public SolveMedia(BufferedImage captcha, CaptchaTimer timer) {
+		super(captcha, timer);
+	}
+	
+	public SolveMedia(BufferedImage captcha) {
+		this(captcha, new CaptchaTimer(0, 60));
 	}
 
 	@Override
