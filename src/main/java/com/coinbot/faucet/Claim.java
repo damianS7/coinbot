@@ -16,6 +16,29 @@
  */
 package com.coinbot.faucet;
 
-public class Claim {
+import com.coinbot.database.Address;
 
+public class Claim {
+	private ClaimTimer timer;
+	private Address address;
+	private Faucet faucet;
+	
+	public Claim(Faucet f, Address addr) {
+		this.faucet = f;
+		this.address = addr;
+		this.timer = new ClaimTimer(0, 0, 0);
+		timer.start();
+	}
+	
+	public Address getAddress() {
+		return address;
+	}
+	
+	public Faucet getFaucet() {
+		return faucet;
+	}
+	
+	public ClaimTimer getTimer() {
+		return timer;
+	}
 }

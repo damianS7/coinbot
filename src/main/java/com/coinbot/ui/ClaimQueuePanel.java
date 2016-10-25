@@ -25,15 +25,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
-import com.coinbot.faucet.Faucet;
+import com.coinbot.faucet.Claim;
 
 
-public class FaucetQueuePanel extends JPanel {
+public class ClaimQueuePanel extends JPanel {
 	private static final long serialVersionUID = 6383417013245947991L;
-	private List<FaucetPanel> panels = new ArrayList<FaucetPanel>();
+	private List<ClaimPanel> panels = new ArrayList<ClaimPanel>();
 	private JPanel queuePanel;
 
-	public FaucetQueuePanel() {
+	public ClaimQueuePanel() {
 		setBorder(new TitledBorder(null, "Faucet queue", TitledBorder.LEADING, 
 				TitledBorder.TOP, null, null));
 		setLayout(new BorderLayout(0, 0));
@@ -46,25 +46,25 @@ public class FaucetQueuePanel extends JPanel {
 		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
 	}
 	
-	public FaucetPanel getPanel(Faucet faucet) {
-		for (FaucetPanel faucetPanel : panels) {
-			if(faucetPanel.getFaucet() == faucet) {
-				return faucetPanel;
+	public ClaimPanel getPanel(Claim claim) {
+		for (ClaimPanel claimPanel : panels) {
+			if(claimPanel.getClaim() == claim) {
+				return claimPanel;
 			}
 		}
 		return null;
 	}
 	
-	public void addFaucet(Faucet faucet) {
-		FaucetPanel fp = new FaucetPanel(faucet);
+	public void addClaim(Claim claim) {
+		ClaimPanel fp = new ClaimPanel(claim);
 		panels.add(fp);
 		queuePanel.add(fp);
 		queuePanel.revalidate();
 	}
 	
-	public void removeFaucet(Faucet faucet) {
-		FaucetPanel fp = getPanel(faucet);
-		if(fp instanceof FaucetPanel) {
+	public void removeClaim(Claim claim) {
+		ClaimPanel fp = getPanel(claim);
+		if(fp instanceof ClaimPanel) {
 			panels.remove(fp);
 			queuePanel.remove(fp);
 			queuePanel.revalidate();

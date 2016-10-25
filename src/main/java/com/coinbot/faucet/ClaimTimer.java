@@ -14,8 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.core;
+package com.coinbot.faucet;
 
-public class FaucetQueue {
+import com.coinbot.utils.CountdownTimer;
 
+public class ClaimTimer extends CountdownTimer {
+	public ClaimTimer(int hours, int minutes, int seconds) {
+		super(hours, minutes, seconds);
+	}
 }

@@ -17,21 +17,18 @@
 package com.coinbot.ui;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.miginfocom.swing.MigLayout;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.JPanel;
 
 public class UI {
 	public JFrame frame;
 	public CaptchaQueuePanel captchaQueue;
 	public AntibotQueuePanel antibotQueue;
 	public WorkerQueuePanel workerQueue;
-	public FaucetQueuePanel faucetQueue;
+	public ClaimQueuePanel claimQueue;
 	public BalancePanel balance;
 	private JPanel panel;
 	private JPanel panel_1;
@@ -44,7 +41,7 @@ public class UI {
 		captchaQueue = new CaptchaQueuePanel();
 		antibotQueue = new AntibotQueuePanel();
 		workerQueue = new WorkerQueuePanel();
-		faucetQueue = new FaucetQueuePanel();
+		claimQueue = new ClaimQueuePanel();
 		balance = new BalancePanel();
 		menu = new Menu();
 		
@@ -63,7 +60,7 @@ public class UI {
 		panel_1 = new JPanel();
 		panel_1.setLayout(new MigLayout("", "[grow]", "[200px][grow]"));
 		panel_1.add(workerQueue, "cell 0 0,grow");
-		panel_1.add(faucetQueue, "cell 0 1,grow");
+		panel_1.add(claimQueue, "cell 0 1,grow");
 		
 		frame.getContentPane().add(panel, "cell 1 0,grow");
 		frame.getContentPane().add(panel_1, "cell 2 0,grow");

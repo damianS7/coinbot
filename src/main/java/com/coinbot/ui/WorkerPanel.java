@@ -23,7 +23,7 @@ import javax.swing.border.TitledBorder;
 
 public class WorkerPanel extends JPanel {
 	private static final long serialVersionUID = 5648986356219872274L;
-	private FaucetPanel last;
+	private ClaimPanel last;
 	
 	public WorkerPanel(String id) {
 		TitledBorder border = new TitledBorder(null, "Worker #" + id, 
@@ -32,7 +32,7 @@ public class WorkerPanel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 	}
 	
-	public void addPanel(FaucetPanel fp) {
+	public void addPanel(ClaimPanel fp) {
 		if(last != null) {
 			removePanel(last);
 		}
@@ -42,7 +42,7 @@ public class WorkerPanel extends JPanel {
 		revalidate();
 	}
 	
-	public void removePanel(FaucetPanel cp) {
+	public void removePanel(ClaimPanel cp) {
 		remove(cp);
 		revalidate();
 	}

@@ -40,7 +40,7 @@ public class CoinbotApplication {
 	public final static String LOG_PATH = APP_PATH + "logs/";
 	public static CoinbotProperties config;
 	public static AddressDatabase addressDatabase;
-	public static FaucetDatabase faucetsDatabase;
+	public static FaucetDatabase faucetDatabase;
 	public static CaptchaDatabase captchaDatabase;
 	public static Coinbot bot;
 	public static UI ui;
@@ -74,8 +74,8 @@ public class CoinbotApplication {
 		
 		// Faucets
 		File fileFaucets = new File(APP_PATH + "faucets.txt");
-		faucetsDatabase = new FaucetDatabase(fileFaucets);
-		logger.info("Cargadas: " + faucetsDatabase.load() + " faucets.");
+		faucetDatabase = new FaucetDatabase(fileFaucets);
+		logger.info("Cargadas: " + faucetDatabase.load() + " faucets.");
 		
 		// Direcciones de BTC
 		File fileAddress = new File(APP_PATH + "address.txt");

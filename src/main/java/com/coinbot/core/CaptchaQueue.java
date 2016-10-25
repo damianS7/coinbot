@@ -19,28 +19,28 @@ package com.coinbot.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.coinbot.captcha.Captcha;
+import com.coinbot.captcha.CaptchaService;
 
 public class CaptchaQueue implements Runnable {
-	private List<Captcha> queue = new ArrayList<Captcha>();
+	private List<CaptchaService> queue = new ArrayList<CaptchaService>();
 	
-	public void toQueue(Captcha captcha) {
+	public void toQueue(CaptchaService captcha) {
 		queue.add(captcha);
 		CoinbotApplication.ui.captchaQueue.addCaptcha(captcha);
 	}
 	
-	public void deQueue(Captcha captcha) {
+	public void deQueue(CaptchaService captcha) {
 		queue.remove(captcha);
 		CoinbotApplication.ui.captchaQueue.removeCaptcha(captcha);
 	}
 	
-	public List<Captcha> getQueue() {
-		return new ArrayList<Captcha>(queue);
+	public List<CaptchaService> getQueue() {
+		return new ArrayList<CaptchaService>(queue);
 	}
 
 	@Override
 	public void run() {
-		for (Captcha captcha : getQueue()) {
+		for (CaptchaService captcha : getQueue()) {
 			if(captcha.isExpired()) {
 				deQueue(captcha);
 			}

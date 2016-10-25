@@ -98,8 +98,8 @@ public class WorkerQueue implements Runnable {
 			if(!isQueueFull()) {
 				//System.out.println("Adding worker id: " + countWorkers());
 				Worker worker = new Worker(countWorkers());
-				worker.start();
 				addWorker(worker);
+				worker.start();
 			}
 		}
 	}

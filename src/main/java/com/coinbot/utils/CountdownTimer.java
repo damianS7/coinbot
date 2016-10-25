@@ -21,7 +21,7 @@ import java.util.TimerTask;
 
 
 public class CountdownTimer implements Runnable {
-	private boolean stopped = false;
+	private boolean stopped = true;
 	private int hours;
 	private int minutes;
 	private int seconds;
@@ -56,6 +56,7 @@ public class CountdownTimer implements Runnable {
 	}
 	
 	public void start() {
+		stopped = false;
 		Thread t = new Thread(this);
 		t.start();
 	}
@@ -100,7 +101,7 @@ public class CountdownTimer implements Runnable {
 	
 	
 	public static void main(String[] args) {
-		CountdownTimer ct = new CountdownTimer(0, 0, 65);
+		CountdownTimer ct = new CountdownTimer(0, 0, 0);
 		ct.start();
 		
 		while(!ct.hasFinished()) {
@@ -143,28 +144,6 @@ public class ClaimTimer implements Runnable {
 		ready = false;
 		thread = new Thread(this);
 		thread.start();
-	}
-	
-	public boolean isReady() {
-		return ready;
-	}
-	
-	public String getTimer() {
-		String zeroH = "";
-		String zeroM = "";
-		String zeroS = "";
-		if(hours < 10) {
-			zeroH = "0";
-		}
-		
-		if(minutes < 10) {
-			zeroM = "0";
-		}
-		if(seconds < 10) {
-			zeroS = "0";
-		}
-		
-		return zeroH + hours + ":" + zeroM + minutes + ":" + zeroS + seconds;
 	}
 	
 	@Override

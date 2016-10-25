@@ -16,13 +16,6 @@
  */
 package com.coinbot.ui;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-
-import net.miginfocom.swing.MigLayout;
-
-import com.coinbot.faucet.Faucet;
 /*
  * Copyright (C) 2013 by danjian <josepwnz@gmail.com>
  *
@@ -41,18 +34,26 @@ import com.coinbot.faucet.Faucet;
  */
 import java.awt.Dimension;
 
-public class FaucetPanel extends JPanel {
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+
+import net.miginfocom.swing.MigLayout;
+
+import com.coinbot.faucet.Claim;
+
+public class ClaimPanel extends JPanel {
 	private static final long serialVersionUID = -6177183141961049655L;
 	private JProgressBar progressBar;
 	private JLabel lblName;
-	private Faucet faucet;
+	private Claim claim;
 
-	public FaucetPanel(Faucet faucet) {
-		this.faucet = faucet;
+	public ClaimPanel(Claim claim) {
+		this.claim = claim;
         setMaximumSize(new Dimension((int) getMaximumSize().getWidth(), 35));
 		setLayout(new MigLayout("", "[150px:120px:150px,left][grow,left][200px:200px:200px,center]", "[20px]"));
 		
-		lblName = new JLabel(faucet.getName());
+		lblName = new JLabel(claim.getFaucet().getName());
 		add(lblName, "cell 0 0,growx");
 		
 		progressBar = new JProgressBar();
@@ -61,8 +62,8 @@ public class FaucetPanel extends JPanel {
 		ready();
 	}
 	
-	public Faucet getFaucet() {
-		return faucet;
+	public Claim getClaim() {
+		return claim;
 	}
 	
 	public void finalStep(String text) {

@@ -19,14 +19,16 @@ package com.coinbot.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.coinbot.database.Address;
 import com.coinbot.faucet.Claim;
+import com.coinbot.faucet.Currency;
 import com.coinbot.faucet.Faucet;
 /**
  * Esta clase se usa para asociar cada proxy con una faucet y direccion btc
  * de forma que los claims sean unicos y no se repitan
  * @author danjian
  */
-public class ClaimController {
+public class ClaimQueue {
 	private List<Claim> queue = new ArrayList<Claim>();
 	
 	public void toQueue(Claim claim) {
@@ -44,7 +46,7 @@ public class ClaimController {
 		
 		if(!cs.isEmpty()) {
 			Claim claim = cs.get(0);
-			if(claim.getTimer().isReady()) {
+			if(claim.getTimer().hasFinished()) {
 				deQueue(claim);
 				return claim;
 			}
@@ -56,14 +58,20 @@ public class ClaimController {
 	public void start() {
 		// Asignacion de claims
 		
-		List<String> address = CoinbotApplication.addressDatabase.getAddresses();
-		List<Faucet> faucets = CoinbotApplication.faucetDatabase.getFaucets();
 		
-		for (Faucet f : faucets) {
-			int index =  0 + (int)(Math.random() * address.size()); 
-			String a = address.get(index);
-			Claim c = new Claim(f, a);
-			toQueue(c);
+		for (Currency currency : Currency.values()) {
+			List<Address> address = CoinbotApplication.addressDatabase
+					.getAddressesCurrency(currency);
+			
+			List<Faucet> faucets = CoinbotApplication.faucetDatabase
+					.getFaucetsCurrency(currency);
+			
+			for (Faucet f : faucets) {
+				int index =  0 + (int)(Math.random() * address.size()); 
+				Address a = address.get(index);
+				Claim c = new Claim(f, a);
+				toQueue(c);
+			}
 		}
 	}
 	
