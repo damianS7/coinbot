@@ -16,17 +16,16 @@
  */
 package com.coinbot.ui;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
 
 public class UI {
 	public JFrame frame;
-	public ResolverQueuePanel resolverQueue;
+	public CaptchaQueuePanel captchaQueue;
+	public AntibotQueuePanel antibotQueue;
 	public WorkerQueuePanel workerQueue;
 	public FaucetQueuePanel faucetQueue;
 	public BalancePanel stats;
@@ -34,7 +33,8 @@ public class UI {
 	public UI() {
 		setLookAndFeel();
 		frame = new JFrame();
-		resolverQueue = new ResolverQueuePanel();
+		captchaQueue = new CaptchaQueuePanel();
+		antibotQueue = new AntibotQueuePanel();
 		workerQueue = new WorkerQueuePanel();
 		faucetQueue = new FaucetQueuePanel();
 		frame.getContentPane().setLayout(new MigLayout("", "[160px]", "[573px,grow][85.00,grow]"));

@@ -16,8 +16,6 @@
  */
 package com.coinbot.ui;
 
-import javax.swing.JPanel;
-
-public class ResolverQueuePanel extends JPanel {
+public class AntibotQueuePanel {
 
 }

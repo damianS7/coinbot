@@ -100,7 +100,7 @@ public class CountdownTimer implements Runnable {
 	
 	
 	public static void main(String[] args) {
-		CountdownTimer ct = new CountdownTimer(1, 20, 30);
+		CountdownTimer ct = new CountdownTimer(0, 0, 65);
 		ct.start();
 		
 		while(!ct.hasFinished()) {

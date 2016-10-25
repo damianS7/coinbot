@@ -16,6 +16,6 @@
  */
 package com.coinbot.ui;
 
-public class AntibotMakejarPanel {
+public class AntibotPanel {
 
 }

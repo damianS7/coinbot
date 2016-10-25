@@ -20,7 +20,7 @@ import com.coinbot.utils.CountdownTimer;
 
 public class CaptchaTimer extends CountdownTimer {
 	
-	public CaptchaTimer(int minutes, int seconds) {
-		super(0, minutes, seconds);
+	public CaptchaTimer(int seconds) {
+		super(0, 0, seconds);
 	}
 }

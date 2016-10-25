@@ -31,7 +31,7 @@ public class SolveMedia extends CaptchaService {
 	}
 	
 	public SolveMedia(BufferedImage captcha) {
-		this(captcha, new CaptchaTimer(0, 60));
+		this(captcha, new CaptchaTimer(60));
 	}
 
 	@Override
