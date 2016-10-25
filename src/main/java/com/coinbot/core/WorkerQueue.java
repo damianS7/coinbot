@@ -29,6 +29,10 @@ public class WorkerQueue implements Runnable {
 	private Thread queueThread;
 	private int workers;
 	
+	public WorkerQueue() {
+		this(1);
+	}
+	
 	public WorkerQueue(int workers) {
 		this.workers = workers;
 	}
@@ -63,6 +67,7 @@ public class WorkerQueue implements Runnable {
 	}
 	
 	public void stopWorkers() {
+		queueThread.interrupt();
 		for (Worker worker : getWorkers()) {
 			worker.stop();
 		}
@@ -96,11 +101,12 @@ public class WorkerQueue implements Runnable {
 			
 			// La cola no esta llena, nuevo worker ...
 			if(!isQueueFull()) {
-				//System.out.println("Adding worker id: " + countWorkers());
+				System.out.println("Adding worker id: " + countWorkers());
 				Worker worker = new Worker(countWorkers());
 				addWorker(worker);
 				worker.start();
 			}
 		}
+		System.out.println("Queue stopped");
 	}
 }

@@ -53,7 +53,7 @@ public class FaucetsDialog extends JDialog {
 			JPanel panel = new JPanel();
 			panel.setLayout(new MigLayout("", "[350px]", "[300px]"));
 			JScrollPane scroll = new JScrollPane();
-			List<Faucet> faucetList = CoinbotApplication.faucetsDatabase
+			List<Faucet> faucetList = CoinbotApplication.faucetDatabase
 					.getFaucetsCurrency(currency);
 			String fs = "";
 			for (Faucet faucet : faucetList) {
@@ -107,7 +107,7 @@ public class FaucetsDialog extends JDialog {
 				}
 			}
 		}
-		CoinbotApplication.faucetsDatabase.setFaucets(saveList);
-		CoinbotApplication.faucetsDatabase.save();
+		CoinbotApplication.faucetDatabase.setFaucets(saveList);
+		CoinbotApplication.faucetDatabase.save();
 	}
 }

@@ -16,18 +16,22 @@
  */
 package com.coinbot.core;
 
+import com.coinbot.ui.WorkerPanel;
+
 
 /**
  * Esta clase hace todo el trabajo para procesar los claims
  * @author danjian
  */
 public class Worker implements Runnable {
+	private WorkerPanel workerPanel;
 	private boolean working = false;
 	private int workerId = 0;
 	private Thread thread;
 
 	public Worker(int workerId) {
 		this.workerId = workerId;
+		this.workerPanel = new WorkerPanel(Integer.toString(workerId));
 		thread = new Thread(this);
 	}
 
@@ -36,7 +40,10 @@ public class Worker implements Runnable {
 	}
 
 	public boolean hasFinished() {
-		return working;
+		if(!working || thread.isInterrupted()) {
+			return true;
+		}
+		return false;
 	}
 
 	public void stop() {
@@ -51,72 +58,21 @@ public class Worker implements Runnable {
 
 	@Override
 	public void run() {
+		CoinbotApplication.ui.workerQueue.addPanel(workerPanel);
 		while (CoinbotApplication.bot.isRunning()) {
-			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				
+			}
 		}
+		//System.out.println("Worker: " + workerId  + " over");
+		CoinbotApplication.ui.workerQueue.removePanel(workerPanel);
 	}
 }
 /*
-package com.coinbot.core;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
-
-import com.coinbot.antibot.AntibotPuzzle;
-import com.coinbot.captcha.CaptchaService;
-import com.coinbot.captcha.CaptchaTimer;
-import com.coinbot.database.AntibotHash;
-import com.coinbot.database.CaptchaHash;
-import com.coinbot.detector.AntibotDetector;
-import com.coinbot.detector.CaptchaDetector;
-import com.coinbot.detector.FaucetDataDetector;
-import com.coinbot.detector.ClaimResultDetector;
-import com.coinbot.detector.InputAddressDetector;
-import com.coinbot.exceptions.DetectionException;
-import com.coinbot.exceptions.UnrecognizedCaptcha;
-import com.coinbot.faucet.Claim;
-import com.coinbot.ui.ClaimPanel;
-import com.coinbot.ui.WorkerPanel;
 
 public class Worker implements Runnable {
-	private int workerId = 0;
-	private WorkerPanel workerPanel;
-	private Thread thread;
-
-	public Worker(int workerId) {
-		this.workerId = workerId;
-		this.workerPanel = new WorkerPanel(Integer.toString(workerId));
-		thread = new Thread(this);
-	}
-
-	public int getWorkerId() {
-		return workerId;
-	}
-
-	public boolean hasFinished() {
-		return thread.isInterrupted();
-	}
-
-	public void stop() {
-		thread.interrupt();
-	}
-
-	public void start() {
-		thread.start();
-	}
 
 	@Override
 	public void run() {

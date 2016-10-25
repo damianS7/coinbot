@@ -31,6 +31,10 @@ import com.coinbot.faucet.Faucet;
 public class ClaimQueue {
 	private List<Claim> queue = new ArrayList<Claim>();
 	
+	public void clearQueue() {
+		queue.clear();
+	}
+	
 	public void toQueue(Claim claim) {
 		queue.add(claim);
 		CoinbotApplication.ui.claimQueue.addClaim(claim);
@@ -57,14 +61,17 @@ public class ClaimQueue {
 	
 	public void start() {
 		// Asignacion de claims
-		
-		
 		for (Currency currency : Currency.values()) {
 			List<Address> address = CoinbotApplication.addressDatabase
 					.getAddressesCurrency(currency);
 			
 			List<Faucet> faucets = CoinbotApplication.faucetDatabase
 					.getFaucetsCurrency(currency);
+			
+			// No hay faucets o direcciones para esta moneda.
+			if(faucets.isEmpty() || address.isEmpty()) {
+				continue;
+			}
 			
 			for (Faucet f : faucets) {
 				int index =  0 + (int)(Math.random() * address.size()); 

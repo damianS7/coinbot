@@ -19,41 +19,18 @@ package com.coinbot.core;
 public class Coinbot {
 	private boolean isRunning;
 	private WorkerQueue workerQueue;
-	//private ClaimQueue claimQueue;
-	//private CaptchaQueue captchaQueue;
+	private ClaimQueue claimQueue;
+	private CaptchaQueue captchaQueue;
 	
 	public Coinbot() {
 		isRunning = false;
+		captchaQueue = new CaptchaQueue();
+		claimQueue = new ClaimQueue();
+		workerQueue = new WorkerQueue();
 	}
 	
 	public boolean isRunning() {
 		return isRunning;
-	}
-	
-	public void stop() {
-		if(!isRunning()) {
-			return;
-		}
-		isRunning = false;
-	}
-	
-	public void start() {
-		if(isRunning()) {
-			return;
-		}
-		isRunning = true;
-	}
-}
-/*
-public class Coinbot {
-	
-	private boolean running = false;
-	
-	public Coinbot() {
-		captchaQueue = new CaptchaQueue();
-		claimQueue = new ClaimQueue();
-		workerQueue = new WorkerQueue();
-		workerQueue.setMaxWorkers(CoinbotApplication.coinbotProperties.getWorkers());
 	}
 	
 	public CaptchaQueue getCaptchaQueue() {
@@ -64,28 +41,24 @@ public class Coinbot {
 		return claimQueue;
 	}
 	
-	public boolean isRunning() {
-		return running;
+	public void stop() {
+		if(!isRunning()) {
+			return;
+		}
+		isRunning = false;
+		workerQueue.stop();
+		workerQueue.clearQueue();
+		claimQueue.clearQueue();
 	}
 	
 	public void start() {
 		if(isRunning()) {
 			return;
 		}
-		
-		running = true;
+		// Start
+		workerQueue.setMaxWorkers(CoinbotApplication.config.getWorkers());
+		isRunning = true;
 		claimQueue.start();
 		workerQueue.start();
 	}
-	
-	public void stop() {
-		if(!isRunning()) {
-			return;
-		}
-		
-		running = false;
-		workerQueue.stop();
-	}
 }
-
-*/
