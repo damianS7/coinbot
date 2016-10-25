@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
+import com.coinbot.antibot.Antibot;
 import com.coinbot.captcha.Captcha;
 
 public class AntibotQueuePanel extends JPanel {
@@ -45,28 +46,28 @@ public class AntibotQueuePanel extends JPanel {
 		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
 	}
 	
-	public AntibotPanel getCaptchaPanel(Captcha captcha) {
+	public AntibotPanel getPanel(Antibot ab) {
 		for (AntibotPanel panel : panels) {
-			if(panel.getAntibot() == captcha) {
+			if(panel.getAntibot() == ab) {
 				return panel;
 			}
 		}
 		return null;
 	}
 	
-	public void addPanel(Captcha captcha) {
-		AntibotPanel c = getCaptchaPanel(captcha); 
+	public void addPanel(Antibot ab) {
+		AntibotPanel c = getPanel(ab); 
 		if(c!=null) {
 			return; // El captcha ya esta añadido
 		}
-		c = new AntibotPanel(captcha);
+		c = new AntibotPanel(ab);
 		panels.add(c);
 		queuePanel.add(c);
 		queuePanel.revalidate();
 	}
 	
-	public void removePanel(Captcha captcha) {
-		AntibotPanel c = getCaptchaPanel(captcha);
+	public void removePanel(Antibot ab) {
+		AntibotPanel c = getPanel(ab);
 		if(c==null) {
 			return; // El captcha no esta añadido
 		}

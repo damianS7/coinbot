@@ -25,19 +25,23 @@ import java.net.URISyntaxException;
  */
 public class Faucet {
 	private String url;
+	private Currency currency;
 	private int reward;
 	private int timer;
 	private int referral;
 	
-	public Faucet(String url, int reward, int timer, int referral) {
+	public Faucet(Currency currency, String url, int reward, int timer, 
+			int referral) {
+		
 		this.url = url;
 		this.timer = timer;
 		this.reward = reward;
 		this.referral = referral;
+		this.currency = currency;
 	}
 	
 	public Faucet(String url) {
-		this(url, 30, 1, 10);
+		this(Currency.BTC, url, 30, 1, 10);
 	}
 	
 	public String getName() {
@@ -79,5 +83,9 @@ public class Faucet {
 	
 	public String getUrl() {
 		return url;
+	}
+	
+	public Currency getCurrency() {
+		return currency;
 	}
 }

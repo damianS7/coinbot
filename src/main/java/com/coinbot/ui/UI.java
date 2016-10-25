@@ -35,18 +35,25 @@ public class UI {
 	public BalancePanel balance;
 	private JPanel panel;
 	private JPanel panel_1;
+	private Menu menu;
 	
 	public UI() {
 		setLookAndFeel();
 		frame = new JFrame();
+		frame.getContentPane().setLayout(new MigLayout("", "[160px][300px][grow]", "[573px,grow][85.00,grow]"));
 		captchaQueue = new CaptchaQueuePanel();
 		antibotQueue = new AntibotQueuePanel();
 		workerQueue = new WorkerQueuePanel();
 		faucetQueue = new FaucetQueuePanel();
 		balance = new BalancePanel();
+		menu = new Menu();
 		
-		frame.getContentPane().setLayout(new MigLayout("", "[160px][300px][grow]", "[573px,grow][85.00,grow]"));
-		frame.getContentPane().add(balance, "cell 0 0,alignx left,growy");
+		JPanel panel1 = new JPanel();
+		frame.getContentPane().add(panel1, "cell 0 0,growy");
+		
+		panel1.setLayout(new MigLayout("", "[300px]", "[][grow]"));
+		panel1.add(balance, "cell 0 0,growx,aligny top");
+		panel1.add(menu, "cell 0 1,grow");
 		
 		panel = new JPanel();
 		panel.setLayout(new MigLayout("", "[300px]", "[grow][grow]"));
@@ -64,9 +71,8 @@ public class UI {
 	}
 	
 	private void initComponents() {
-		frame.setSize(900, 600);
+		frame.setSize(1200, 600);
 		frame.setTitle("Coinbot - Bitcoin faucet bot");
-		//frame.setJMenuBar(bar.getBar());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setAlwaysOnTop(true);
