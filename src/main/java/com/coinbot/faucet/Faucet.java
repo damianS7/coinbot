@@ -40,6 +40,10 @@ public class Faucet {
 		this.currency = currency;
 	}
 	
+	public Faucet(Currency currency, String url) {
+		this(currency, url, 0, 0, 0);
+	}
+	
 	public Faucet(String url) {
 		this(Currency.BTC, url, 30, 1, 10);
 	}

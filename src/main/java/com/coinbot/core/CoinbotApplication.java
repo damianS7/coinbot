@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import com.coinbot.database.AddressDatabase;
 import com.coinbot.database.CaptchaDatabase;
 import com.coinbot.database.CoinbotProperties;
+import com.coinbot.database.FaucetDatabase;
 import com.coinbot.ui.UI;
 
 /**
@@ -39,6 +40,7 @@ public class CoinbotApplication {
 	public final static String LOG_PATH = APP_PATH + "logs/";
 	public static CoinbotProperties config;
 	public static AddressDatabase addressDatabase;
+	public static FaucetDatabase faucetsDatabase;
 	public static CaptchaDatabase captchaDatabase;
 	public static Coinbot bot;
 	public static UI ui;
@@ -69,6 +71,11 @@ public class CoinbotApplication {
 		File fileConfig = new File(APP_PATH + "coinbot.properties");
 		config = new CoinbotProperties(fileConfig);
 		logger.info("Configuracion cargada.");
+		
+		// Faucets
+		File fileFaucets = new File(APP_PATH + "faucets.txt");
+		faucetsDatabase = new FaucetDatabase(fileFaucets);
+		logger.info("Cargadas: " + faucetsDatabase.load() + " faucets.");
 		
 		// Direcciones de BTC
 		File fileAddress = new File(APP_PATH + "address.txt");

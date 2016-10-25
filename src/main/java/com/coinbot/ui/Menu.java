@@ -16,27 +16,64 @@
  */
 package com.coinbot.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JPanel;
+
 import net.miginfocom.swing.MigLayout;
+
 import javax.swing.JButton;
+
+import com.coinbot.core.CoinbotApplication;
 
 public class Menu extends JPanel {
 	public Menu() {
 		setLayout(new MigLayout("", "[grow]", "[][][][][][][][]"));
 		
 		JButton btnStart = new JButton("Start");
+		btnStart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CoinbotApplication.bot.start();
+			}
+		});
 		add(btnStart, "cell 0 0,growx,aligny center");
 		
 		JButton btnStop = new JButton("Stop");
+		btnStop.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CoinbotApplication.bot.stop();
+			}
+		});
 		add(btnStop, "cell 0 1,growx");
 		
 		JButton btnPreferences = new JButton("Preferences");
+		btnPreferences.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PropertiesDialog();
+			}
+		});
 		add(btnPreferences, "cell 0 2,growx");
 		
 		JButton btnAddresses = new JButton("Addresses");
+		btnAddresses.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new AddressesDialog();
+			}
+		});
 		add(btnAddresses, "cell 0 3,growx");
 		
 		JButton btnFaucets = new JButton("Faucets");
+		btnFaucets.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new FaucetsDialog();
+			}
+		});
 		add(btnFaucets, "cell 0 4,growx");
 		
 		JButton btnCaptchas = new JButton("Captchas");

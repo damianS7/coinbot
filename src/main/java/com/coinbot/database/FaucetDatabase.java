@@ -17,28 +17,70 @@
 package com.coinbot.database;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.coinbot.faucet.Currency;
 import com.coinbot.faucet.Faucet;
 
 public class FaucetDatabase extends FileDatabase {
+	private List<Faucet> faucets = new ArrayList<Faucet>();
 	
 	public FaucetDatabase(File file) {
 		super(file);
 	}
-
-	public List<Faucet> getFaucets() {
-		List<Faucet> faucets = new ArrayList<Faucet>();
-		
+	
+	@Override
+	public int load() throws IOException {
+		super.load();
 		for (String line : getLines()) {
-			faucets.add(new Faucet(line));
+			try {
+				if(line.contains("=")) {
+					String[] s = line.split("=");
+					if(s.length == 2) {
+						faucets.add(new Faucet(Currency.valueOf(s[0]), s[1]));
+					}
+				}
+			} catch (Exception e) {
+				continue;
+			}
 		}
-		
-		return faucets;
+		return faucets.size();
+	}
+
+
+	@Override
+	public void save() {
+		List<String> newLines = new ArrayList<String>();
+		for (Faucet faucet : getFaucets()) {
+			newLines.add(faucet.getCurrency().toString() + "=" 
+					+ faucet.getUrl());
+		}
+		setLines(newLines);
+		try {
+			super.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void setFaucets(List<String> faucets) {
-		setLines(faucets);
+	public List<Faucet> getFaucets() {
+		return new ArrayList<Faucet>(faucets);
+	}
+	
+	public void setFaucets(List<Faucet> newFaucets) {
+		this.faucets.clear();
+		this.faucets = newFaucets;
+	}
+	
+	public List<Faucet> getFaucetsCurrency(Currency currency) {
+		List<Faucet> rList = new ArrayList<Faucet>();
+		for (Faucet f : getFaucets()) {
+			if(f.getCurrency().equals(currency)) {
+				rList.add(f);
+			}
+		}
+		return rList; 
 	}
 }

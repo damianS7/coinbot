@@ -17,27 +17,76 @@
 package com.coinbot.database;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.coinbot.faucet.Currency;
 
 /**
  * Esta clase lee/guarda las direcciones de BTC de un archivo.
  * @author danjian
  */
 public class AddressDatabase extends FileDatabase {
+	private List<Address> addresses = new ArrayList<Address>();
 
 	public AddressDatabase(File file) {
 		super(file);
 	}
 	
-	public List<String> getAddresses() {
-		return getLines();
+	@Override
+	public int load() throws IOException {
+		super.load();
+		for (String line : getLines()) {
+			try {
+				if(line.contains("=")) {
+					String[] s = line.split("=");
+					if(s.length == 2) {
+						addresses.add(new Address(Currency.valueOf(s[0]), s[1]));
+					}
+				}
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		return addresses.size();
 	}
 	
-	public void addAddress(String address) {
-		addLine(address);
+	@Override
+	public void save() {
+		List<String> newLines = new ArrayList<String>();
+		for (Address address : getAddresses()) {
+			newLines.add(address.getCurrency().toString() + "=" 
+					+ address.getAddress());
+		}
+		setLines(newLines);
+		try {
+			super.save();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void overwrite(List<String> address) {
-		setLines(address);
+	public List<Address> getAddresses() {
+		return new ArrayList<Address>(addresses);
+	}
+	
+	public List<Address> getAddressesCurrency(Currency currency) {
+		List<Address> rList = new ArrayList<Address>();
+		for (Address address : getAddresses()) {
+			if(address.getCurrency().equals(currency)) {
+				rList.add(address);
+			}
+		}
+		return rList; 
+	}
+	
+	public void addAddress(Currency currency, String address) {
+		addresses.add(new Address(currency, address));
+	}
+	
+	public void setAddress(List<Address> newAddresses) {
+		this.addresses.clear();
+		this.addresses = newAddresses;
 	}
 }
