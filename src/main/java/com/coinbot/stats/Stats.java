@@ -14,8 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.core;
+package com.coinbot.stats;
+
+import com.coinbot.faucet.Currency;
 
 public class Stats {
-	private int btcBalance;
+	private Balance btc;
+	private Balance ltc;
+	private Balance doge;
+	
+	public void updateBalance(Currency currency, int amount) {
+		
+	}
 }
