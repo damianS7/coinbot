@@ -16,6 +16,25 @@
  */
 package com.coinbot.core;
 
-public class AntibotQueue {
+import java.util.ArrayList;
+import java.util.List;
 
+import com.coinbot.antibot.Antibot;
+
+public class AntibotQueue {
+private List<Antibot> queue = new ArrayList<Antibot>();
+	
+	public void toQueue(Antibot ab) {
+		queue.add(ab);
+		CoinbotApplication.ui.antibotQueue.addPanel(ab);
+	}
+	
+	public void deQueue(Antibot ab) {
+		queue.remove(ab);
+		CoinbotApplication.ui.antibotQueue.removePanel(ab);
+	}
+	
+	public List<Antibot> getQueue() {
+		return new ArrayList<Antibot>(queue);
+	}
 }
