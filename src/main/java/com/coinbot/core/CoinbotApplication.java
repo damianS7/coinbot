@@ -40,6 +40,7 @@ public class CoinbotApplication {
 	public static CoinbotProperties config;
 	public static AddressDatabase addressDatabase;
 	public static CaptchaDatabase captchaDatabase;
+	public static Coinbot bot;
 	public static UI ui;
 
 	public static void main(String[] args) throws Exception {
@@ -78,6 +79,9 @@ public class CoinbotApplication {
 		File fileCaptcha = new File(APP_PATH + "captchas.txt");
 		captchaDatabase = new CaptchaDatabase(fileCaptcha);
 		logger.info("Cargados: " + captchaDatabase.load() + " captchas.");
+		
+		
+		bot = new Coinbot();
 		
 		// Todo funciona, lanzando UI!
 		EventQueue.invokeLater(new Runnable() {
