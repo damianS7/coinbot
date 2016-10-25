@@ -16,6 +16,34 @@
  */
 package com.coinbot.core;
 
-public class CaptchaQueue {
+import java.util.ArrayList;
+import java.util.List;
 
+import com.coinbot.captcha.Captcha;
+
+public class CaptchaQueue implements Runnable {
+	private List<Captcha> queue = new ArrayList<Captcha>();
+	
+	public void toQueue(Captcha captcha) {
+		queue.add(captcha);
+		CoinbotApplication.ui.captchaQueue.addCaptcha(captcha);
+	}
+	
+	public void deQueue(Captcha captcha) {
+		queue.remove(captcha);
+		CoinbotApplication.ui.captchaQueue.removeCaptcha(captcha);
+	}
+	
+	public List<Captcha> getQueue() {
+		return new ArrayList<Captcha>(queue);
+	}
+
+	@Override
+	public void run() {
+		for (Captcha captcha : getQueue()) {
+			if(captcha.isExpired()) {
+				deQueue(captcha);
+			}
+		}
+	}
 }
