@@ -21,6 +21,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.border.TitledBorder;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.JPanel;
 
 public class UI {
 	public JFrame frame;
@@ -28,7 +32,9 @@ public class UI {
 	public AntibotQueuePanel antibotQueue;
 	public WorkerQueuePanel workerQueue;
 	public FaucetQueuePanel faucetQueue;
-	public BalancePanel stats;
+	public BalancePanel balance;
+	private JPanel panel;
+	private JPanel panel_1;
 	
 	public UI() {
 		setLookAndFeel();
@@ -37,9 +43,23 @@ public class UI {
 		antibotQueue = new AntibotQueuePanel();
 		workerQueue = new WorkerQueuePanel();
 		faucetQueue = new FaucetQueuePanel();
-		frame.getContentPane().setLayout(new MigLayout("", "[160px]", "[573px,grow][85.00,grow]"));
-		stats = new BalancePanel();
-		frame.getContentPane().add(stats, "cell 0 0,alignx left,growy");
+		balance = new BalancePanel();
+		
+		frame.getContentPane().setLayout(new MigLayout("", "[160px][300px][grow]", "[573px,grow][85.00,grow]"));
+		frame.getContentPane().add(balance, "cell 0 0,alignx left,growy");
+		
+		panel = new JPanel();
+		panel.setLayout(new MigLayout("", "[300px]", "[grow][grow]"));
+		panel.add(captchaQueue, "cell 0 0,grow");
+		panel.add(antibotQueue, "cell 0 1,grow");
+		
+		panel_1 = new JPanel();
+		panel_1.setLayout(new MigLayout("", "[grow]", "[200px][grow]"));
+		panel_1.add(workerQueue, "cell 0 0,grow");
+		panel_1.add(faucetQueue, "cell 0 1,grow");
+		
+		frame.getContentPane().add(panel, "cell 1 0,grow");
+		frame.getContentPane().add(panel_1, "cell 2 0,grow");
 		initComponents();
 	}
 	

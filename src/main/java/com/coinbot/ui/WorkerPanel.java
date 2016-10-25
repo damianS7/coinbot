@@ -16,5 +16,34 @@
  */
 package com.coinbot.ui;
 
-public class WorkerPanel {
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+
+public class WorkerPanel extends JPanel {
+	private static final long serialVersionUID = 5648986356219872274L;
+	private FaucetPanel last;
+	
+	public WorkerPanel(String id) {
+		TitledBorder border = new TitledBorder(null, "Worker #" + id, 
+				TitledBorder.LEADING, TitledBorder.TOP, null, null);
+		setBorder(border);
+		setLayout(new BorderLayout(0, 0));
+	}
+	
+	public void addPanel(FaucetPanel fp) {
+		if(last != null) {
+			removePanel(last);
+		}
+		
+		last = fp;
+		add(fp, BorderLayout.CENTER);
+		revalidate();
+	}
+	
+	public void removePanel(FaucetPanel cp) {
+		remove(cp);
+		revalidate();
+	}
 }

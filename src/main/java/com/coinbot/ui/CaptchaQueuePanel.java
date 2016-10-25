@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.coinbot.ui;
 
 import java.awt.BorderLayout;
@@ -32,32 +31,32 @@ public class CaptchaQueuePanel extends JPanel {
 	private static final long serialVersionUID = -8529873522109527318L;
 	private List<CaptchaPanel> panels = new ArrayList<CaptchaPanel>();
 	private JPanel queuePanel;
-
+	
 	public CaptchaQueuePanel() {
-		setBorder(new TitledBorder(null, "Captcha queue", TitledBorder.LEADING,
+		setBorder(new TitledBorder(null, "Captcha queue", TitledBorder.LEADING, 
 				TitledBorder.TOP, null, null));
 		setLayout(new BorderLayout(0, 0));
-
+		
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, BorderLayout.CENTER);
-
+		
 		queuePanel = new JPanel();
 		scrollPane.setViewportView(queuePanel);
 		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
 	}
-
+	
 	public CaptchaPanel getCaptchaPanel(Captcha captcha) {
 		for (CaptchaPanel panel : panels) {
-			if (panel.getCaptcha() == captcha) {
+			if(panel.getCaptcha() == captcha) {
 				return panel;
 			}
 		}
 		return null;
 	}
-
+	
 	public void addCaptcha(Captcha captcha) {
-		CaptchaPanel c = getCaptchaPanel(captcha);
-		if (c != null) {
+		CaptchaPanel c = getCaptchaPanel(captcha); 
+		if(c!=null) {
 			return; // El captcha ya esta añadido
 		}
 		c = new CaptchaPanel(captcha);
@@ -65,16 +64,16 @@ public class CaptchaQueuePanel extends JPanel {
 		queuePanel.add(c);
 		queuePanel.revalidate();
 	}
-
+	
 	public void removeCaptcha(Captcha captcha) {
 		CaptchaPanel c = getCaptchaPanel(captcha);
-		if (c == null) {
+		if(c==null) {
 			return; // El captcha no esta añadido
 		}
 		panels.remove(c);
 		queuePanel.remove(c);
 		queuePanel.revalidate();
 		queuePanel.repaint();
-		// queuePanel.updateUI();
+		//queuePanel.updateUI();
 	}
 }

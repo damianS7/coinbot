@@ -14,29 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.rotator;
+package com.coinbot.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+public class About {
 
-import com.coinbot.faucet.Faucet;
-
-/**
- * Esta clase se usa para crear listas de faucets sobre las que hacer claims
- * @author danjian
- */
-public class Rotator {
-	private List<Faucet> faucets = new ArrayList<Faucet>();
-	
-	public List<Faucet> getFaucets() {
-		return faucets;
-	}
-	
-	public void add(Faucet f) {
-		faucets.add(f);
-	}
-	
-	public void remove(Faucet f) {
-		faucets.remove(f);
-	}
 }

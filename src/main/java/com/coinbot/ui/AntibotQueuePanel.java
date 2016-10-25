@@ -16,6 +16,64 @@
  */
 package com.coinbot.ui;
 
-public class AntibotQueuePanel {
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.TitledBorder;
+
+import com.coinbot.captcha.Captcha;
+
+public class AntibotQueuePanel extends JPanel {
+	private static final long serialVersionUID = -8529873522109527318L;
+	private List<AntibotPanel> panels = new ArrayList<AntibotPanel>();
+	private JPanel queuePanel;
+	
+	public AntibotQueuePanel() {
+		setBorder(new TitledBorder(null, "Antibot queue", TitledBorder.LEADING, 
+				TitledBorder.TOP, null, null));
+		setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		add(scrollPane, BorderLayout.CENTER);
+		
+		queuePanel = new JPanel();
+		scrollPane.setViewportView(queuePanel);
+		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
+	}
+	
+	public AntibotPanel getCaptchaPanel(Captcha captcha) {
+		for (AntibotPanel panel : panels) {
+			if(panel.getAntibot() == captcha) {
+				return panel;
+			}
+		}
+		return null;
+	}
+	
+	public void addPanel(Captcha captcha) {
+		AntibotPanel c = getCaptchaPanel(captcha); 
+		if(c!=null) {
+			return; // El captcha ya esta añadido
+		}
+		c = new AntibotPanel(captcha);
+		panels.add(c);
+		queuePanel.add(c);
+		queuePanel.revalidate();
+	}
+	
+	public void removePanel(Captcha captcha) {
+		AntibotPanel c = getCaptchaPanel(captcha);
+		if(c==null) {
+			return; // El captcha no esta añadido
+		}
+		panels.remove(c);
+		queuePanel.remove(c);
+		queuePanel.revalidate();
+		queuePanel.repaint();
+		//queuePanel.updateUI();
+	}
 }

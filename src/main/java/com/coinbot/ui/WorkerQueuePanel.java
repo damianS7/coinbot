@@ -16,6 +16,38 @@
  */
 package com.coinbot.ui;
 
-public class WorkerQueuePanel {
+import java.awt.BorderLayout;
 
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.border.TitledBorder;
+
+public class WorkerQueuePanel extends JPanel {
+	private static final long serialVersionUID = -3578204953212078397L;
+	private JPanel queuePanel;
+	
+	public WorkerQueuePanel() {
+		setBorder(new TitledBorder(null, "Workers", TitledBorder.LEADING, 
+				TitledBorder.TOP, null, null));
+		setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane = new JScrollPane();
+		add(scrollPane, BorderLayout.CENTER);
+		
+		queuePanel = new JPanel();
+		scrollPane.setViewportView(queuePanel);
+		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
+	}
+	
+	public void addPanel(WorkerPanel panel) {
+		queuePanel.add(panel);
+		queuePanel.revalidate();
+	}
+	
+	public void removePanel(WorkerPanel panel) {
+		queuePanel.remove(panel);
+		queuePanel.revalidate();
+		queuePanel.repaint();
+	}
 }
