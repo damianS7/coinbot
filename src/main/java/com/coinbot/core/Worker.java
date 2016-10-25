@@ -19,7 +19,6 @@ package com.coinbot.core;
 
 /**
  * Esta clase hace todo el trabajo para procesar los claims
- * 
  * @author danjian
  */
 public class Worker implements Runnable {

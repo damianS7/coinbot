@@ -20,4 +20,22 @@ import com.coinbot.faucet.Currency;
 
 public class Balance {
 	private Currency currency;
+	private double amount;
+	
+	public Balance(Currency currency) {
+		this(currency, 0.00000000);
+	}
+	
+	public Balance(Currency currency, double amount) {
+		this.currency = currency;
+		this.amount = amount;
+	}
+	
+	public double getAmount() {
+		return amount;
+	}
+	
+	public Currency getCurrency() {
+		return currency;
+	}
 }

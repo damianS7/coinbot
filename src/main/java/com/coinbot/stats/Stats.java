@@ -16,12 +16,19 @@
  */
 package com.coinbot.stats;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.coinbot.faucet.Currency;
 
 public class Stats {
-	private Balance btc;
-	private Balance ltc;
-	private Balance doge;
+	private List<Balance> balances = new ArrayList<Balance>();
+	
+	public Stats() {
+		for (Currency currency : Currency.values()) {
+			balances.add(new Balance(currency));
+		}
+	}
 	
 	public void updateBalance(Currency currency, int amount) {
 		
