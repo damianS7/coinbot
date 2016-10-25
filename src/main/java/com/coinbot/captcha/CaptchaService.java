@@ -20,11 +20,14 @@ import java.awt.image.BufferedImage;
 
 import org.openqa.selenium.WebDriver;
 
+import com.coinbot.exceptions.InputNotFoundException;
+
 public abstract class CaptchaService extends Captcha {
 	protected CaptchaTimer timer;
 	
 	public CaptchaService(BufferedImage captcha, CaptchaTimer timer) {
 		super(captcha);
+		this.timer = timer;
 		timer.start();
 	}
 
@@ -36,6 +39,13 @@ public abstract class CaptchaService extends Captcha {
 		return timer;
 	}
 	
+	public boolean isResolved() {
+		if(getAnswer() == null) {
+			return false;
+		}
+		return true;
+	}
+	
 	public abstract void insertAnswer(WebDriver driver, String answer) 
-			throws Exception;
+			throws InputNotFoundException;
 }

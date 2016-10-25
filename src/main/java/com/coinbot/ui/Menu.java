@@ -83,7 +83,22 @@ public class Menu extends JPanel {
 		add(btnAntibot, "cell 0 6,growx");
 		
 		JButton btnStats = new JButton("Stats");
+		btnStats.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new StatsDialog();
+			}
+		});
 		add(btnStats, "cell 0 7,growx");
+		
+		JButton btnAbout = new JButton("About");
+		btnAbout.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new AboutDialog();
+			}
+		});
+		add(btnAbout, "cell 0 8,growx");
 	}
 
 }

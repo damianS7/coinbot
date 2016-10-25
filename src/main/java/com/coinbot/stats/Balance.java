@@ -16,9 +16,12 @@
  */
 package com.coinbot.stats;
 
+import java.text.DecimalFormat;
+
 import com.coinbot.faucet.Currency;
 
 public class Balance {
+	private DecimalFormat df = new DecimalFormat("0.00000000");
 	private Currency currency;
 	private double amount;
 	
@@ -37,5 +40,17 @@ public class Balance {
 	
 	public Currency getCurrency() {
 		return currency;
+	}
+	
+	public String getBalance() {
+		return df.format(amount);
+	}
+	
+	public void updateBalance(double amount) {
+		if(currency != Currency.DOGE) {
+			amount /= 100000000;
+		}
+		
+		this.amount += amount;
 	}
 }

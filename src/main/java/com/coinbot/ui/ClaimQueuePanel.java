@@ -30,7 +30,6 @@ import com.coinbot.faucet.Claim;
 
 public class ClaimQueuePanel extends JPanel {
 	private static final long serialVersionUID = 6383417013245947991L;
-	private List<ClaimPanel> panels = new ArrayList<ClaimPanel>();
 	private JPanel queuePanel;
 
 	public ClaimQueuePanel() {
@@ -46,29 +45,14 @@ public class ClaimQueuePanel extends JPanel {
 		queuePanel.setLayout(new BoxLayout(queuePanel, BoxLayout.Y_AXIS));
 	}
 	
-	public ClaimPanel getPanel(Claim claim) {
-		for (ClaimPanel claimPanel : panels) {
-			if(claimPanel.getClaim() == claim) {
-				return claimPanel;
-			}
-		}
-		return null;
-	}
-	
-	public void addClaim(Claim claim) {
-		ClaimPanel fp = new ClaimPanel(claim);
-		panels.add(fp);
-		queuePanel.add(fp);
+	public void addPanel(ClaimPanel	panel) {
+		queuePanel.add(panel);
 		queuePanel.revalidate();
 	}
 	
-	public void removeClaim(Claim claim) {
-		ClaimPanel fp = getPanel(claim);
-		if(fp instanceof ClaimPanel) {
-			panels.remove(fp);
-			queuePanel.remove(fp);
-			queuePanel.revalidate();
-			queuePanel.repaint();
-		}
+	public void removePanel(ClaimPanel panel) {
+		queuePanel.remove(panel);
+		queuePanel.revalidate();
+		queuePanel.repaint();
 	}
 }

@@ -16,21 +16,29 @@
  */
 package com.coinbot.core;
 
+import com.coinbot.stats.Stats;
+
 public class Coinbot {
 	private boolean isRunning;
 	private WorkerQueue workerQueue;
 	private ClaimQueue claimQueue;
 	private CaptchaQueue captchaQueue;
+	private Stats stats;
 	
 	public Coinbot() {
 		isRunning = false;
 		captchaQueue = new CaptchaQueue();
 		claimQueue = new ClaimQueue();
 		workerQueue = new WorkerQueue();
+		stats = new Stats();
 	}
 	
 	public boolean isRunning() {
 		return isRunning;
+	}
+	
+	public Stats getStats() {
+		return stats;
 	}
 	
 	public CaptchaQueue getCaptchaQueue() {

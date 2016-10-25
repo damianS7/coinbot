@@ -18,10 +18,10 @@ package com.coinbot.core;
 
 import java.awt.EventQueue;
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import com.coinbot.database.AddressDatabase;
+import com.coinbot.database.AntibotDatabase;
 import com.coinbot.database.CaptchaDatabase;
 import com.coinbot.database.CoinbotProperties;
 import com.coinbot.database.FaucetDatabase;
@@ -42,6 +42,8 @@ public class CoinbotApplication {
 	public static AddressDatabase addressDatabase;
 	public static FaucetDatabase faucetDatabase;
 	public static CaptchaDatabase captchaDatabase;
+	public static AntibotDatabase antibotDatabase;
+	public static String browser = "/home/jian/Descargas/firefox46/bin/firefox";
 	public static Coinbot bot;
 	public static UI ui;
 
@@ -86,6 +88,11 @@ public class CoinbotApplication {
 		File fileCaptcha = new File(APP_PATH + "captchas.txt");
 		captchaDatabase = new CaptchaDatabase(fileCaptcha);
 		logger.info("Cargados: " + captchaDatabase.load() + " captchas.");
+		
+		// Captchas resueltos
+		File fileAntibot = new File(CoinbotApplication.APP_PATH + "antibots/");
+		antibotDatabase = new AntibotDatabase(fileAntibot);
+		logger.info("Cargados: " + antibotDatabase.load() + " antibots.");
 		
 		
 		bot = new Coinbot();

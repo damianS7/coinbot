@@ -45,7 +45,6 @@ import com.coinbot.faucet.Claim;
 public class ClaimPanel extends JPanel {
 	private static final long serialVersionUID = -6177183141961049655L;
 	private JProgressBar progressBar;
-	private JLabel lblName;
 	private Claim claim;
 
 	public ClaimPanel(Claim claim) {
@@ -53,8 +52,11 @@ public class ClaimPanel extends JPanel {
         setMaximumSize(new Dimension((int) getMaximumSize().getWidth(), 35));
 		setLayout(new MigLayout("", "[150px:120px:150px,left][grow,left][200px:200px:200px,center]", "[20px]"));
 		
-		lblName = new JLabel(claim.getFaucet().getName());
+		JLabel lblName = new JLabel(claim.getFaucet().getName());
 		add(lblName, "cell 0 0,growx");
+		
+		JLabel label = new JLabel(claim.getFaucet().getCurrency().toString());
+		add(label, "cell 1 0");
 		
 		progressBar = new JProgressBar();
 		add(progressBar, "cell 2 0,growx,aligny top");
@@ -79,11 +81,6 @@ public class ClaimPanel extends JPanel {
 	public void nextStep(String step) {
 		progressBar.setValue(progressBar.getValue()+1);
 		progressBar.setString(step);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void ready() {

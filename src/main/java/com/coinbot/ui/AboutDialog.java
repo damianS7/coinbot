@@ -17,30 +17,37 @@
 package com.coinbot.ui;
 
 import javax.swing.JDialog;
-
-import com.coinbot.core.CoinbotApplication;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 
-public class StatsDialog extends JDialog {
-	private static final long serialVersionUID = 1291611127085806611L;
+import java.awt.BorderLayout;
+
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+
+import com.coinbot.core.CoinbotApplication;
+
+import java.awt.Font;
+import javax.swing.UIManager;
+
+public class AboutDialog extends JDialog {
+	private static final long serialVersionUID = 4981909357262396526L;
 	
-	public StatsDialog() {
-		super(CoinbotApplication.ui.frame, "Stats");
+	public AboutDialog() {
+		super(CoinbotApplication.ui.frame, "About Coinbot");
 		setModal(true);
-		getContentPane().setLayout(new MigLayout("", "[grow][grow]", "[][grow][]"));
+		setSize(1200, 600);
+		JLabel lblCoinbotByDanjian = new JLabel(" Coinbot by Danjian ");
+		lblCoinbotByDanjian.setFont(new Font("D3 Euronism Bold", Font.BOLD, 38));
+		lblCoinbotByDanjian.setHorizontalAlignment(SwingConstants.CENTER);
+		getContentPane().add(lblCoinbotByDanjian, BorderLayout.NORTH);
 		
-		JLabel label = new JLabel("New label");
-		getContentPane().add(label, "cell 0 0,alignx right");
+		JTextArea area = new JTextArea();
+		area.setEnabled(false);
+		area.setEditable(false);
+		area.setText("This is a bot developed by danjian");
+		getContentPane().add(area, BorderLayout.CENTER);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		getContentPane().add(lblNewLabel, "cell 1 0,alignx right");
-		
-		JButton btnCancel = new JButton("Cancel");
-		getContentPane().add(btnCancel, "cell 1 2,alignx right");
-		
-		//pack();
+		pack();
 		setLocationRelativeTo(CoinbotApplication.ui.frame);
 		setVisible(true);
 	}

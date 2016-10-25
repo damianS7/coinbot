@@ -36,12 +36,13 @@ public class CoinbotProperties extends Properties {
 	
 	// Campos obligatorios
 	private String[][] fields = { { "workers", "1" },
-			{ "2captcha_enabled", "false" }, { "2captcha_api", "" },
-			{ "deathbycaptcha_enabled", "false" }, { "deathbycaptcha_api", "" },
-			{ "captcha_queue_enabled", "false" },
+			{ "2captcha_enabled", "false" }, { "2captcha_api", "123" },
+			{ "deathbycaptcha_enabled", "false" }, { "deathbycaptcha_api", "1234" },
+			{ "captcha_queue_enabled", "true" },
+			{ "captcha_timeout", "60" },
 			{ "rotator_ifaucet", "http://ifaucet.net/" },
-			{ "rotator_makejar", "http://bit.makejar.com/" },
-			{ "use_rotator_faucets", "false" } };
+			{ "rotator_makejar", "http://bit.makejar.com/" }
+			};
 
 	public CoinbotProperties(File file) throws IOException {
 		this.file = file;
@@ -72,10 +73,42 @@ public class CoinbotProperties extends Properties {
 		store(new FileOutputStream(file), "Coinbot properties");
 	}
 
-	public void set2Captcha(boolean active) {
-		setProperty("2captcha_enabled", Boolean.toString(active));
+	public String get2CaptchaAPI() {
+		return getProperty("2captcha_api");
 	}
-
+	
+	public void set2CaptchaAPI(String api) {
+		setProperty("2captcha_api", api);
+	}
+	
+	public String getDeathByCaptchaAPI() {
+		return getProperty("deathbycaptcha_api");
+	}
+	
+	public void setDeathByCaptcha(boolean enabled) {
+		setProperty("deathbycaptcha_enabled", Boolean.toString(enabled));
+	}
+	
+	public void setDeathByCaptchaAPI(String api) {
+		setProperty("deathbycaptcha_api", api);
+	}
+	
+	public boolean isDeathByCaptchaEnabled() {
+		return Boolean.parseBoolean(getProperty("deathbycaptcha_enabled"));
+	}
+	
+	public int getCaptchaTimeout() {
+		return Integer.parseInt(getProperty("captcha_timeout"));
+	}
+	
+	public void setCaptchaTimeout(int timeout) {
+		setProperty("captcha_timeout", Integer.toString(timeout));
+	}
+	
+	public void set2Captcha(boolean enabled) {
+		setProperty("2captcha_enabled", Boolean.toString(enabled));
+	}
+	
 	public boolean is2CaptchaEnabled() {
 		return Boolean.parseBoolean(getProperty("2captcha_enabled"));
 	}

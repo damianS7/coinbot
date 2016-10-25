@@ -17,8 +17,10 @@
 package com.coinbot.faucet;
 
 import com.coinbot.database.Address;
+import com.coinbot.ui.ClaimPanel;
 
 public class Claim {
+	private ClaimPanel panel;
 	private ClaimTimer timer;
 	private Address address;
 	private Faucet faucet;
@@ -27,6 +29,7 @@ public class Claim {
 		this.faucet = f;
 		this.address = addr;
 		this.timer = new ClaimTimer(0, 0, 0);
+		this.panel = new ClaimPanel(this);
 		timer.start();
 	}
 	
@@ -40,5 +43,9 @@ public class Claim {
 	
 	public ClaimTimer getTimer() {
 		return timer;
+	}
+	
+	public ClaimPanel getPanel() {
+		return panel;
 	}
 }

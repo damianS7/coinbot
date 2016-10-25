@@ -31,7 +31,21 @@ import com.coinbot.core.CoinbotApplication;
 import com.coinbot.utils.Image;
 
 public class AntibotDatabase {
+	private File antibotPath;
 	private List<Antibot> antibots = new ArrayList<Antibot>();
+	
+	public AntibotDatabase(File path) {
+		this.antibotPath = path;
+	}
+	
+	public Antibot getAntibot(String hash) {
+		for (Antibot antibot : antibots) {
+			if(Image.imageToHash(antibot.getImage()).equals(hash)) {
+				return antibot;
+			}
+		}
+		return null;
+	}
 	
 	public List<Antibot> getAntibots() {
 		return antibots;
@@ -42,9 +56,8 @@ public class AntibotDatabase {
 	}
 	
 	public int load() {
-		File pwd = new File(CoinbotApplication.APP_PATH + "antibots/");
 		
-		for (File f : pwd.listFiles()) {
+		for (File f : antibotPath.listFiles()) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(
 						new FileInputStream(f));

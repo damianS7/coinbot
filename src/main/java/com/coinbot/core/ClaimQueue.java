@@ -32,17 +32,19 @@ public class ClaimQueue {
 	private List<Claim> queue = new ArrayList<Claim>();
 	
 	public void clearQueue() {
-		queue.clear();
+		for (Claim claim : getClaims()) {
+			deQueue(claim);
+		}
 	}
 	
 	public void toQueue(Claim claim) {
 		queue.add(claim);
-		CoinbotApplication.ui.claimQueue.addClaim(claim);
+		CoinbotApplication.ui.claimQueue.addPanel(claim.getPanel());
 	}
 	
 	public void deQueue(Claim claim) {
 		queue.remove(claim);
-		CoinbotApplication.ui.claimQueue.removeClaim(claim);
+		CoinbotApplication.ui.claimQueue.removePanel(claim.getPanel());
 	}
 	
 	public Claim next() {

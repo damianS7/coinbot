@@ -22,6 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import com.coinbot.core.CoinbotApplication;
 import com.coinbot.exceptions.InputNotFoundException;
 
 public class SolveMedia extends CaptchaService {
@@ -31,7 +32,7 @@ public class SolveMedia extends CaptchaService {
 	}
 	
 	public SolveMedia(BufferedImage captcha) {
-		this(captcha, new CaptchaTimer(60));
+		this(captcha, new CaptchaTimer(CoinbotApplication.config.getCaptchaTimeout()));
 	}
 
 	@Override

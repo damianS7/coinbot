@@ -16,14 +16,13 @@
  */
 package com.coinbot.stats;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.coinbot.core.CoinbotApplication;
 import com.coinbot.faucet.Currency;
 
 public class Stats {
-	private DecimalFormat df = new DecimalFormat("0.00000000");
 	private List<Balance> balances = new ArrayList<Balance>();
 	
 	public Stats() {
@@ -32,7 +31,18 @@ public class Stats {
 		}
 	}
 	
-	public void updateBalance(Currency currency, int amount) {
-		
+	public Balance getBalance(Currency currency) {
+		for (Balance balance : balances) {
+			if(balance.getCurrency() == currency) {
+				return balance;
+			}
+		}
+		return null;
+	}
+	
+	public void updateBalance(Currency currency, double amount) {
+		Balance b = getBalance(currency);
+		b.updateBalance(amount);
+		CoinbotApplication.ui.balance.setBalance(currency, b.getBalance());
 	}
 }

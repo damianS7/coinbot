@@ -93,7 +93,6 @@ public class FaucetDetector implements Detector {
 		data += " Reward: " + getReward();
 		data += " Timer: " + getTimer();
 		data += " Claimeable: " + isClaimeable();
-		System.out.println(data);
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {

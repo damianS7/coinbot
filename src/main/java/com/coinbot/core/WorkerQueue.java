@@ -62,7 +62,6 @@ public class WorkerQueue implements Runnable {
 	}
 	
 	public void stop() {
-		queueThread.interrupt();
 		stopWorkers();
 	}
 	

@@ -16,8 +16,12 @@
  */
 package com.coinbot.ui;
 
+import java.awt.Font;
+
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -37,38 +41,44 @@ public class UI {
 	public UI() {
 		setLookAndFeel();
 		frame = new JFrame();
-		frame.getContentPane().setLayout(new MigLayout("", "[160px][300px][grow]", "[573px,grow][85.00,grow]"));
+		frame.getContentPane().setLayout(new MigLayout("", "[160px][350px][grow]", "[85.00,grow][573px,grow]"));
 		captchaQueue = new CaptchaQueuePanel();
 		antibotQueue = new AntibotQueuePanel();
 		workerQueue = new WorkerQueuePanel();
 		claimQueue = new ClaimQueuePanel();
+		
+		JLabel label = new JLabel(" Coinbot by Danjian ");
+		label.setFont(new Font("D3 Euronism Bold", Font.BOLD, 38));
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		frame.getContentPane().add(label, "cell 0 0 3 1");
+		
 		balance = new BalancePanel();
 		menu = new Menu();
 		
 		JPanel panel1 = new JPanel();
-		frame.getContentPane().add(panel1, "cell 0 0,growy");
+		frame.getContentPane().add(panel1, "cell 0 1,growy");
 		
 		panel1.setLayout(new MigLayout("", "[300px]", "[][grow]"));
 		panel1.add(balance, "cell 0 0,growx,aligny top");
 		panel1.add(menu, "cell 0 1,grow");
 		
 		panel = new JPanel();
-		panel.setLayout(new MigLayout("", "[300px]", "[grow][grow]"));
+		panel.setLayout(new MigLayout("", "[300px,grow]", "[grow][grow]"));
 		panel.add(captchaQueue, "cell 0 0,grow");
 		panel.add(antibotQueue, "cell 0 1,grow");
 		
 		panel_1 = new JPanel();
-		panel_1.setLayout(new MigLayout("", "[grow]", "[200px][grow]"));
+		panel_1.setLayout(new MigLayout("", "[grow]", "[100px][grow]"));
 		panel_1.add(workerQueue, "cell 0 0,grow");
 		panel_1.add(claimQueue, "cell 0 1,grow");
 		
-		frame.getContentPane().add(panel, "cell 1 0,grow");
-		frame.getContentPane().add(panel_1, "cell 2 0,grow");
+		frame.getContentPane().add(panel, "cell 1 1,grow");
+		frame.getContentPane().add(panel_1, "cell 2 1,grow");
 		initComponents();
 	}
 	
 	private void initComponents() {
-		frame.setSize(1200, 600);
+		frame.setSize(1200, 700);
 		frame.setTitle("Coinbot - Bitcoin faucet bot");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);

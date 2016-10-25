@@ -16,14 +16,22 @@
  */
 package com.coinbot.ui;
 
-import javax.swing.JPanel;
-import javax.swing.JButton;
 import javax.swing.JLabel;
-import net.miginfocom.swing.MigLayout;
+import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
+import net.miginfocom.swing.MigLayout;
+
+import com.coinbot.faucet.Currency;
+
 public class BalancePanel extends JPanel {
-	
+	private static final long serialVersionUID = 5862330573901127410L;
+	private JLabel btc;
+	private JLabel ltc;
+	private JLabel doge;
+	private JLabel dash;
+	private JLabel eth;
+
 	public BalancePanel() {
 		setLayout(new MigLayout("", "[31px,grow]", "[]"));
 		
@@ -35,33 +43,54 @@ public class BalancePanel extends JPanel {
 		JLabel lblBtc = new JLabel("BTC");
 		panel.add(lblBtc, "cell 0 0");
 		
-		JLabel label = new JLabel("0.00000000");
-		panel.add(label, "cell 1 0");
+		btc = new JLabel("0.00000000");
+		panel.add(btc, "cell 1 0");
 		
 		JLabel lblLtc = new JLabel("LTC");
 		panel.add(lblLtc, "cell 0 1");
 		
-		JLabel label_1 = new JLabel("0.00000000");
-		panel.add(label_1, "cell 1 1");
+		ltc = new JLabel("0.00000000");
+		panel.add(ltc, "cell 1 1");
 		
 		JLabel lblDoge = new JLabel("DOGE");
 		panel.add(lblDoge, "cell 0 4");
 		
-		JLabel label_2 = new JLabel("0");
-		panel.add(label_2, "cell 1 4");
+		doge = new JLabel("0.00000000");
+		panel.add(doge, "cell 1 4");
 		
 		JLabel lblDash = new JLabel("DASH");
 		panel.add(lblDash, "cell 0 2");
 		
-		JLabel label_3 = new JLabel("0.00000000");
-		panel.add(label_3, "cell 1 2");
+		dash = new JLabel("0.00000000");
+		panel.add(dash, "cell 1 2");
 		
 		JLabel lblEth = new JLabel("ETH");
 		panel.add(lblEth, "cell 0 3");
 		
-		JLabel label_4 = new JLabel("0.00000000");
-		panel.add(label_4, "cell 1 3");
-		
+		eth = new JLabel("0.00000000");
+		panel.add(eth, "cell 1 3");
+	}
+	
+	public void setBalance(Currency currency, String amount) {
+		switch (currency) {
+		case BTC:
+			btc.setText(amount);
+			break;
+		case LTC:
+			ltc.setText(amount);
+			break;
+		case DOGE:
+			doge.setText(amount);
+			break;
+		case DASH:
+			dash.setText(amount);
+			break;
+		case ETH:
+			eth.setText(amount);
+			break;
+		default:
+			break;
+		}
 	}
 	
 }
