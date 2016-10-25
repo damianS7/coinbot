@@ -16,12 +16,14 @@
  */
 package com.coinbot.stats;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.coinbot.faucet.Currency;
 
 public class Stats {
+	private DecimalFormat df = new DecimalFormat("0.00000000");
 	private List<Balance> balances = new ArrayList<Balance>();
 	
 	public Stats() {
