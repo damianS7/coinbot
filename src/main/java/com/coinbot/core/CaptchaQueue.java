@@ -37,6 +37,13 @@ public class CaptchaQueue implements Runnable {
 	public List<CaptchaService> getQueue() {
 		return new ArrayList<CaptchaService>(queue);
 	}
+	
+	public void stop() {
+		for (CaptchaService captchaService : getQueue()) {
+			//captchaService.getTimer().stop();
+			deQueue(captchaService);
+		}
+	}
 
 	@Override
 	public void run() {

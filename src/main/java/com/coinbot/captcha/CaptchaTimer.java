@@ -23,4 +23,8 @@ public class CaptchaTimer extends CountdownTimer {
 	public CaptchaTimer(int seconds) {
 		super(0, 0, seconds);
 	}
+
+	@Override
+	public void timerTask() {
+	}
 }

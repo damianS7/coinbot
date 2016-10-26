@@ -29,7 +29,7 @@ import com.coinbot.core.CoinbotApplication;
 
 public class Menu extends JPanel {
 	public Menu() {
-		setLayout(new MigLayout("", "[grow]", "[][][][][][][][]"));
+		setLayout(new MigLayout("", "[grow]", "[][][][][][][][][][]"));
 		
 		JButton btnStart = new JButton("Start");
 		btnStart.addActionListener(new ActionListener() {
@@ -99,6 +99,15 @@ public class Menu extends JPanel {
 			}
 		});
 		add(btnAbout, "cell 0 8,growx");
+		
+		JButton btnLog = new JButton("Log");
+		btnLog.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CoinbotApplication.ui.log.showLog();
+			}
+		});
+		add(btnLog, "cell 0 9,growx");
 	}
 
 }

@@ -37,4 +37,10 @@ private List<Antibot> queue = new ArrayList<Antibot>();
 	public List<Antibot> getQueue() {
 		return new ArrayList<Antibot>(queue);
 	}
+	
+	public void stop() {
+		for (Antibot antibot : getQueue()) {
+			deQueue(antibot);
+		}
+	}
 }

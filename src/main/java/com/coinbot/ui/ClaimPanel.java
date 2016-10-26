@@ -71,11 +71,6 @@ public class ClaimPanel extends JPanel {
 	public void finalStep(String text) {
 		progressBar.setValue(progressBar.getMaximum());
 		progressBar.setString(text);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public void nextStep(String step) {

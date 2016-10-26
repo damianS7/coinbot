@@ -23,6 +23,7 @@ public class Coinbot {
 	private WorkerQueue workerQueue;
 	private ClaimQueue claimQueue;
 	private CaptchaQueue captchaQueue;
+	private AntibotQueue antibotQueue;
 	private Stats stats;
 	
 	public Coinbot() {
@@ -30,6 +31,7 @@ public class Coinbot {
 		captchaQueue = new CaptchaQueue();
 		claimQueue = new ClaimQueue();
 		workerQueue = new WorkerQueue();
+		antibotQueue = new AntibotQueue();
 		stats = new Stats();
 	}
 	
@@ -55,8 +57,9 @@ public class Coinbot {
 		}
 		isRunning = false;
 		workerQueue.stop();
-		workerQueue.clearQueue();
-		claimQueue.clearQueue();
+		claimQueue.stop();
+		captchaQueue.stop();
+		antibotQueue.stop();
 	}
 	
 	public void start() {

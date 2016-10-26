@@ -21,13 +21,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.coinbot.core.CoinbotApplication;
+
 public class Antibot implements Serializable {
 	private static final long serialVersionUID = 7468098572515422144L;
+	private AntibotTimer timer;
 	private List<AntibotLink> links = new ArrayList<AntibotLink>();
 	private BufferedImage image;
+	private int[] order;
 
 	public Antibot(BufferedImage image) {
 		this.image = image;
+		this.timer = new AntibotTimer(CoinbotApplication.config.getCaptchaTimeout());
+		this.timer.start();
+	}
+	
+	public AntibotTimer getTimer() {
+		return timer;
 	}
 	
 	public BufferedImage getImage() {
@@ -40,5 +50,33 @@ public class Antibot implements Serializable {
 	
 	public void addLink(AntibotLink al) {
 		links.add(al);
+	}
+	
+	public int[] getOrder() {
+		return order;
+	}
+	
+	public void setOrder(int[] order) {
+		this.order = order;
+	}
+	
+	public boolean isResolved() {
+		if(order==null) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean isExpired() {
+		if(timer.hasFinished()) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void resolve() {
+		for (int x : order) {
+			links.get(x).getLink().click();
+		}
 	}
 }

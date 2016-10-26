@@ -18,9 +18,11 @@ package com.coinbot.ui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 public class WorkerQueuePanel extends JPanel {

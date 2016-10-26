@@ -14,37 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.faucet;
+package com.coinbot.antibot;
 
-import com.coinbot.database.Address;
-import com.coinbot.ui.ClaimPanel;
+import com.coinbot.captcha.CaptchaTimer;
 
-public class Claim {
-	private ClaimPanel panel;
-	private ClaimTimer timer;
-	private Address address;
-	private Faucet faucet;
-	
-	public Claim(Faucet f, Address addr) {
-		this.faucet = f;
-		this.address = addr;
-		this.panel = new ClaimPanel(this);
-		this.timer = new ClaimTimer(this, 0, 0, 0);
+public class AntibotTimer extends CaptchaTimer {
+
+	public AntibotTimer(int seconds) {
+		super(seconds);
 	}
-	
-	public Address getAddress() {
-		return address;
-	}
-	
-	public Faucet getFaucet() {
-		return faucet;
-	}
-	
-	public ClaimTimer getTimer() {
-		return timer;
-	}
-	
-	public ClaimPanel getPanel() {
-		return panel;
-	}
+
 }

@@ -20,6 +20,8 @@ import java.awt.image.BufferedImage;
 
 import org.openqa.selenium.WebDriver;
 
+import com.coinbot.exceptions.InputNotFoundException;
+
 public class ReCaptcha extends CaptchaService {
 	
 	public ReCaptcha(BufferedImage captcha, CaptchaTimer timer) {
@@ -27,8 +29,8 @@ public class ReCaptcha extends CaptchaService {
 	}
 
 	@Override
-	public void insertAnswer(WebDriver driver, String answer) throws Exception {
+	public void insertAnswer(WebDriver driver, String answer)
+			throws InputNotFoundException {
 	}
-
 
 }

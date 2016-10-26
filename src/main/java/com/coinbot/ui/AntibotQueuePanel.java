@@ -26,7 +26,6 @@ import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 import com.coinbot.antibot.Antibot;
-import com.coinbot.captcha.Captcha;
 
 public class AntibotQueuePanel extends JPanel {
 	private static final long serialVersionUID = -8529873522109527318L;

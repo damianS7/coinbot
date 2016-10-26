@@ -19,7 +19,17 @@ package com.coinbot.faucet;
 import com.coinbot.utils.CountdownTimer;
 
 public class ClaimTimer extends CountdownTimer {
-	public ClaimTimer(int hours, int minutes, int seconds) {
+	private Claim claim;
+	public ClaimTimer(Claim claim, int hours, int minutes, int seconds) {
 		super(hours, minutes, seconds);
+		this.claim = claim;
+	}
+
+	@Override
+	public void timerTask() {
+		claim.getPanel().getBar().setMaximum(claim.getFaucet().getTimer()*60);
+		claim.getPanel().getBar().setValue(getSeconds());
+		claim.getPanel().getBar().setStringPainted(true);
+		claim.getPanel().getBar().setString(toString());
 	}
 }

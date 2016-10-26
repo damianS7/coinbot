@@ -31,12 +31,6 @@ import com.coinbot.faucet.Faucet;
 public class ClaimQueue {
 	private List<Claim> queue = new ArrayList<Claim>();
 	
-	public void clearQueue() {
-		for (Claim claim : getClaims()) {
-			deQueue(claim);
-		}
-	}
-	
 	public void toQueue(Claim claim) {
 		queue.add(claim);
 		CoinbotApplication.ui.claimQueue.addPanel(claim.getPanel());
@@ -81,6 +75,12 @@ public class ClaimQueue {
 				Claim c = new Claim(f, a);
 				toQueue(c);
 			}
+		}
+	}
+	
+	public void stop() {
+		for (Claim claim : getClaims()) {
+			deQueue(claim);
 		}
 	}
 	

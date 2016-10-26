@@ -36,6 +36,10 @@ public class InputAddressDetector implements Detector {
 		input.sendKeys(address);
 	}
 
+	public WebElement getInput() {
+		return input;
+	}
+	
 	@Override
 	public void detect() throws DetectionException {
 		List<WebElement> inputs = driver.findElements(By.tagName("input"));

@@ -16,60 +16,74 @@
  */
 package com.coinbot.ui;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 import net.miginfocom.swing.MigLayout;
 
 import com.coinbot.antibot.Antibot;
+import com.coinbot.antibot.AntibotLink;
 
 public class AntibotPanel extends JPanel {
 	private static final long serialVersionUID = 1868852228497027988L;
 	private Antibot antibot;
-	private JTextField input;
 	private JLabel timer;
+	private List<JSpinner> spinners = new ArrayList<JSpinner>();
 	
 	public AntibotPanel(Antibot ab) {
 		this.antibot = ab;
-		setLayout(new MigLayout("", "[grow,center]", "[][]"));
+		setLayout(new MigLayout("", "[grow,center][grow]", "[][][]"));
 		
-		JLabel label = new JLabel();
-		label.setIcon(new ImageIcon(ab.getImage()));
-		add(label, "cell 0 0");
+		JLabel puzzle = new JLabel();
+		puzzle.setIcon(new ImageIcon(ab.getImage()));
+		add(puzzle, "cell 0 0 2 1");
 		
-		input = new JTextField();
-		input.addKeyListener(new KeyListener() {
+		int index = 1;
+		for (AntibotLink abl : ab.getLinks()) {
+			JLabel l = new JLabel();
+			l.setIcon(new  ImageIcon(abl.getImage()));
+			add(l, "cell 0 " + index);
 			
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
+			JSpinner spinner = new JSpinner();
+			spinner.setModel(new SpinnerNumberModel(index, 1, 5, 1));
+			spinners.add(spinner);
+			add(spinner, "cell 1 " + index + ",growx");
 			
+			index++;
+		}
+		
+		timer = new JLabel();
+		add(timer, "cell 0 " + index+1);
+		
+		JButton btnDone = new JButton("Done!");
+		btnDone.addActionListener(new ActionListener() {
 			@Override
-			public void keyReleased(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			public void actionPerformed(ActionEvent e) {
+				int size = spinners.size();
+				int[] order = new int[size];
+				
+				
+				for (int i = 0; i < order.length; i++) {
+					int x = Integer.parseInt(spinners.get(i).getValue()
+							.toString());
+					order[i] = x-1;
 				}
-			}
-			
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-				}
+				
+				antibot.setOrder(order);
+				antibot.getTimer().stop();
 			}
 		});
-		JPanel panel = new JPanel();
-		add(panel, "cell 0 1,growx");
-		panel.setLayout(new MigLayout("", "[114px,grow][20px,center]", "[19px]"));
-		
-		panel.add(input, "cell 0 0,growx,aligny top");
-		input.setColumns(10);
-		
-		timer = new JLabel("-");
-		panel.add(timer, "cell 1 0,alignx center,aligny center");
+		add(btnDone, "cell 1 " + index+1 + ",growx");
 	}
 	
 	public Antibot getAntibot() {

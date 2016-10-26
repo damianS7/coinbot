@@ -24,11 +24,29 @@ import com.coinbot.faucet.Currency;
 
 public class Stats {
 	private List<Balance> balances = new ArrayList<Balance>();
+	private Uptimer uptimer;
+	private int totalClaims = 0;
+	private int claimSuccess = 0;
+	private int claimFailed = 0;
 	
 	public Stats() {
+		uptimer = new Uptimer();
+		uptimer.start();
 		for (Currency currency : Currency.values()) {
 			balances.add(new Balance(currency));
 		}
+	}
+	
+	public int getClaimSuccess() {
+		return claimSuccess;
+	}
+	
+	public int getClaimFailed() {
+		return claimFailed;
+	}
+	
+	public int getTotalClaims() {
+		return totalClaims;
 	}
 	
 	public Balance getBalance(Currency currency) {

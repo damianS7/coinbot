@@ -34,6 +34,7 @@ public class UI {
 	public WorkerQueuePanel workerQueue;
 	public ClaimQueuePanel claimQueue;
 	public BalancePanel balance;
+	public LogDialog log;
 	private JPanel panel;
 	private JPanel panel_1;
 	private Menu menu;
@@ -41,8 +42,9 @@ public class UI {
 	public UI() {
 		setLookAndFeel();
 		frame = new JFrame();
-		frame.getContentPane().setLayout(new MigLayout("", "[160px][350px][grow]", "[85.00,grow][573px,grow]"));
+		frame.getContentPane().setLayout(new MigLayout("", "[160px][grow][350px]", "[85.00,grow][573px,grow]"));
 		captchaQueue = new CaptchaQueuePanel();
+		log = new LogDialog();
 		antibotQueue = new AntibotQueuePanel();
 		workerQueue = new WorkerQueuePanel();
 		claimQueue = new ClaimQueuePanel();
@@ -68,12 +70,12 @@ public class UI {
 		panel.add(antibotQueue, "cell 0 1,grow");
 		
 		panel_1 = new JPanel();
-		panel_1.setLayout(new MigLayout("", "[grow]", "[100px][grow]"));
+		panel_1.setLayout(new MigLayout("", "[grow]", "[200px][300px,grow]"));
 		panel_1.add(workerQueue, "cell 0 0,grow");
 		panel_1.add(claimQueue, "cell 0 1,grow");
 		
-		frame.getContentPane().add(panel, "cell 1 1,grow");
-		frame.getContentPane().add(panel_1, "cell 2 1,grow");
+		frame.getContentPane().add(panel, "cell 2 1,grow");
+		frame.getContentPane().add(panel_1, "cell 1 1,grow");
 		initComponents();
 	}
 	

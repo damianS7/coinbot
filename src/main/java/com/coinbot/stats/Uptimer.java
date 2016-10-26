@@ -14,50 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.coinbot.utils;
+package com.coinbot.stats;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-public abstract class CountdownTimer implements Runnable {
-	private boolean stopped = true;
-	private int hours;
-	private int minutes;
-	private int seconds;
-	
-	public CountdownTimer() {
-		this(0, 0, 0);
-	}
-	
-	public CountdownTimer(int hours, int minutes, int seconds) {
-		this.hours = hours;
-		this.minutes = minutes;
-		this.seconds = seconds;
-	}
+public class Uptimer implements Runnable {
+	private int hours = 0;
+	private int minutes = 0;
+	private int seconds = 0;
 	
 	public int getHours() {
 		return hours;
-	}
-	
-	public void setHours(int hours) {
-		this.hours = hours;
 	}
 	
 	public int getMinutes() {
 		return minutes;
 	}
 	
-	public void setMinutes(int minutes) {
-		this.minutes = minutes;
-	}
-	
 	public int getSeconds() {
 		return seconds;
-	}
-	
-	public void setSeconds(int seconds) {
-		this.seconds = seconds;
 	}
 	
 	public String toString() {
@@ -68,47 +44,32 @@ public abstract class CountdownTimer implements Runnable {
 	}
 	
 	public void start() {
-		stopped = false;
 		Thread t = new Thread(this);
 		t.start();
 	}
-	
-	public void stop() {
-		stopped = true;
-	}
-	
-	public boolean hasFinished() {
-		return stopped;
-	}
-	
-	public abstract void timerTask();
-	
+
 	@Override
 	public void run() {
 		Timer t = new Timer();
 		t.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if(stopped) {
+				/*if(!CoinbotApplication.bot.isRunning()) {
 					t.cancel();
 					return;
+				}*/
+				
+				seconds++;
+				if(seconds > 59) {
+					minutes++;
+					seconds = 0;
 				}
 				
-				seconds--;
-				if(seconds < 0) {
-					minutes--;
-					seconds = 59;
+				if(minutes > 59) {
+					hours++;
+					minutes = 0;
 				}
 				
-				if(minutes < 0) {
-					hours--;
-					minutes = 59;
-				}
-				
-				if(hours < 0) {
-					stopped = true;
-				}
-				timerTask();
 			}
 		}, 0, 1000);
 	}

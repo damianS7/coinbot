@@ -41,12 +41,14 @@ public class WorkerQueue implements Runnable {
 		this.workers = maxWorkers;
 	}
 	
-	public synchronized void addWorker(Worker worker) {
+	public synchronized void toQueue(Worker worker) {
 		queue.add(worker);
+		CoinbotApplication.ui.workerQueue.addPanel(worker.getPanel());
 	}
 	
-	public synchronized void removeWorker(Worker worker) {
+	public synchronized void deQueue(Worker worker) {
 		queue.remove(worker);
+		CoinbotApplication.ui.workerQueue.removePanel(worker.getPanel());
 	}
 	
 	public List<Worker> getWorkers() {
@@ -57,10 +59,6 @@ public class WorkerQueue implements Runnable {
 		return getWorkers().size();
 	}
 	
-	public void clearQueue() {
-		queue.clear();
-	}
-	
 	public void stop() {
 		stopWorkers();
 	}
@@ -69,8 +67,8 @@ public class WorkerQueue implements Runnable {
 		queueThread.interrupt();
 		for (Worker worker : getWorkers()) {
 			worker.stop();
+			deQueue(worker);
 		}
-		clearQueue();
 	}
 	
 	public void start() {
@@ -88,7 +86,7 @@ public class WorkerQueue implements Runnable {
 	public void checkQueue() {
 		for (Worker worker : getWorkers()) {
 			if(worker.hasFinished()) {
-				removeWorker(worker);
+				deQueue(worker);
 			}
 		}
 	}
@@ -102,7 +100,7 @@ public class WorkerQueue implements Runnable {
 			if(!isQueueFull()) {
 				System.out.println("Adding worker id: " + countWorkers());
 				Worker worker = new Worker(countWorkers());
-				addWorker(worker);
+				toQueue(worker);
 				worker.start();
 			}
 		}
